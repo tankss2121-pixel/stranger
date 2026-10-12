@@ -1,0 +1,730 @@
+<!doctype html>
+<html lang="en">
+<!--
+STRANGER — SINGLE-FILE WEBSITE
+Upload this file as index.html to an HTTPS static host.
+Camera preview and local settings work without the Node.js server.
+Live random chat requires the matching/signaling server from the original ZIP.
+A standalone HTML file cannot itself operate a shared queue or a TURN relay.
+All styles, icons and browser libraries are embedded. No CDN is required.
+Open Website setup on the page for integration details and verification limits.
+-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="One conversation at a time. Random video and text chat, with you in control.">
+  <title>stranger. — a simple hello</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2218%22%20fill%3D%22%23e9794c%22%2F%3E%3Cpath%20d%3D%22M44%2021c-4-8-23-8-23%203%200%2011%2023%204%2023%2016%200%2012-20%2014-26%204%22%20fill%3D%22none%22%20stroke%3D%22%23181a19%22%20stroke-width%3D%227%22%20stroke-linecap%3D%22round%22%2F%3E%3C%2Fsvg%3E%0A">
+  <style>
+
+:root{--bg:#f5f4ef;--surface:#fffefa;--ink:#232621;--muted:#777b73;--line:#dedfd6;--soft:#eeeee6;--accent:#e78359;--accent-soft:#f5e8df;--green:#578367;--danger:#ba4b42;--radius:18px;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--ink);background:var(--bg);color-scheme:light}
+:root[data-theme=dark]{--bg:#191c19;--surface:#222622;--ink:#eeeeE6;--muted:#a1a79d;--line:#383e36;--soft:#2c322a;--accent:#e99068;--accent-soft:#453328;--green:#8abf97;--danger:#ee938a;color-scheme:dark}
+*{box-sizing:border-box}body{margin:0}button,input,select,textarea{font:inherit}button,a,input,select,textarea{-webkit-tap-highlight-color:transparent}button,a{touch-action:manipulation}button{cursor:pointer}button{color:inherit}button:disabled{cursor:not-allowed;opacity:.42}button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid var(--accent);outline-offset:3px}button:focus:not(:focus-visible){outline:none}button{transition:background .16s,transform .16s,opacity .16s}button:not(:disabled):active{transform:translateY(1px)}button svg{pointer-events:none}svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}a{color:inherit;text-decoration:none}p,h1,h2,h3{margin:0}button{border:0;background:none}input,select,textarea{color:var(--ink)}[hidden]{display:none!important}.shell{max-width:1536px;margin:auto;padding:0 48px}.header{display:flex;align-items:center;justify-content:space-between;height:96px;border-bottom:1px solid var(--line)}.brand{font-size:33px;letter-spacing:-1.7px;font-weight:750;display:flex;align-items:center;line-height:1}.brand-dot{color:var(--accent)}.brand-icon{display:flex;align-items:center;justify-content:center;background:var(--accent);color:#242820;font-family:Georgia,serif;font-style:italic;font-size:31px;width:37px;height:37px;border-radius:12px;transform:rotate(-9deg);margin-right:13px}.header-right{display:flex;gap:24px;align-items:center}.online{display:flex;align-items:center;gap:9px;font-size:12px;font-weight:600}.status-dot{width:7px;height:7px;background:#8b9187;border-radius:50%;display:inline-block;flex-shrink:0}.status-dot.live{background:#9abc83;box-shadow:0 0 0 4px #9abc8312}.status-dot.searching{background:#ebad73;animation:pulse 1.6s infinite}.adult-pill{font-size:10px;letter-spacing:1px;border:1px solid var(--line);padding:6px 8px;border-radius:6px;font-weight:700}.icon-button{width:36px;height:36px;display:inline-flex;align-items:center;justify-content:center;border-radius:9px}.icon-button:hover:not(:disabled){background:var(--soft)}.intro{display:flex;align-items:flex-end;justify-content:space-between;padding:39px 0 32px;gap:24px}.eyebrow{font-family:'SFMono-Regular',Consolas,monospace;font-size:9px;letter-spacing:1.6px;font-weight:500;line-height:1.7}.tiny-cross{color:var(--accent);font-size:16px;vertical-align:middle;margin-right:7px}h1{font-size:clamp(28px,3vw,46px);font-weight:500;letter-spacing:-1.7px;margin-top:10px;line-height:1.15}h1 em,h2 em{font-family:Georgia,'Times New Roman',serif;font-weight:400;letter-spacing:-1px}h1 em{color:var(--accent)}.intro-note{font-size:12px;color:var(--muted);line-height:1.8;border-left:1px solid var(--line);padding-left:21px;margin-bottom:3px}.dev-notice,.connection-notice{font-size:12px;border:1px solid var(--line);border-radius:10px;background:var(--soft);padding:11px 14px;margin-bottom:18px;line-height:1.6;display:flex;align-items:center;gap:10px}.dev-notice svg{width:17px}.dev-notice>span{flex:1}.connection-notice{color:var(--danger);border-color:var(--danger);background:var(--surface)}.workspace-grid{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(325px,1fr);gap:23px;align-items:stretch}.video-column{min-width:0}.video-stage{background:#242c26;color:#e5e8dd;aspect-ratio:1.65;position:relative;overflow:hidden;border-radius:var(--radius);isolation:isolate}.video-stage>video{width:100%;height:100%;position:absolute;inset:0;object-fit:cover;background:#171c18}.video-stage>video.blurred{filter:blur(32px);transform:scale(1.1)}.video-topline,.video-bottomline{position:absolute;left:21px;right:21px;display:flex;align-items:center;justify-content:space-between;gap:12px;z-index:3}.video-topline{top:19px}.video-badge{background:#171d1899;border:1px solid #d7e2ce15;border-radius:7px;font-size:10px;padding:7px 10px;display:inline-flex;align-items:center;gap:7px;backdrop-filter:blur(12px)}.video-bottomline{bottom:14px;font-family:Consolas,monospace;font-size:8px;letter-spacing:1.4px;right:auto;max-width:60%;flex-wrap:wrap}.on-video{background:#1c241aaa;width:30px;height:30px;color:#e6ebdf}.on-video svg{width:17px}.on-video:hover:not(:disabled){background:#3b4834}.remote-placeholder{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 30%,#3b483c,transparent 75%),#252e27;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px 30px 60px;text-align:center}.hello-art{position:relative;width:210px;height:122px;margin:0 0 10px;display:flex;align-items:center;justify-content:center}.orbit{position:absolute;border:1px solid #a8b69a23;width:150px;height:90px;border-radius:50%;transform:rotate(-30deg)}.orbit-two{transform:rotate(30deg);width:185px;height:120px}.hello-symbol{width:74px;height:74px;border-radius:24px;background:#c7d8b4;display:grid;place-items:center;transform:rotate(-12deg);box-shadow:6px 8px 0 #11180e30;color:#374330}.hello-symbol svg{width:50px;height:50px;stroke-width:1.8}.art-spark{position:absolute;color:#e99b71;font-size:30px}.spark-one{top:10px;right:12px}.spark-two{bottom:12px;left:18px;color:#8b9d7f;font-size:22px}.video-eyebrow{font:8px/1.7 Consolas,monospace;letter-spacing:1.8px;color:#9dac91;margin-bottom:12px}.remote-placeholder h2{font-size:clamp(18px,1.9vw,26px);letter-spacing:-.7px;font-weight:450;line-height:1.35}.remote-placeholder>p:last-child{font-size:11px;color:#9ea995;margin-top:12px;line-height:1.5}.local-tile{position:absolute;bottom:16px;right:16px;width:25%;aspect-ratio:1.42;background:#404a3d;border:2px solid #ffffff1a;border-radius:12px;overflow:hidden;z-index:4;box-shadow:0 6px 24px #0003}.local-tile video{width:100%;height:100%;object-fit:cover}.local-tile video.mirrored{transform:scaleX(-1)}.local-placeholder{position:absolute;inset:0;background:#3a4337;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding-bottom:15px}.local-placeholder>svg{width:22px;height:22px;color:#a9b3a0}.local-placeholder>span{font-size:9px;color:#c0c7b9}.preview-button{font-size:9px;background:#57614f;color:#eaf0e2;border:1px solid #6a7562;padding:5px 9px;border-radius:5px}.preview-button:hover{background:#69795c}.local-label{position:absolute;bottom:7px;left:9px;right:9px;display:flex;justify-content:space-between;align-items:center;font-size:9px;text-shadow:0 1px 3px #000}.local-label>span:last-child{font:7px Consolas,monospace;letter-spacing:.4px;background:#222b2199;padding:3px 4px;border-radius:3px}.reveal-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:15px;background:#18211480;z-index:2}.reveal-overlay>svg{width:33px;height:33px}.reveal-overlay small{font-size:11px;color:#d7dfcc}.play-remote{position:absolute;top:70px;left:50%;transform:translateX(-50%);z-index:6;font-size:12px!important;width:max-content;max-width:90%}.call-controls{display:flex;gap:10px;align-items:center;margin:17px 0 24px}.button{display:inline-flex;align-items:center;justify-content:center;gap:12px;border:1px solid transparent;font-size:13px;font-weight:600;padding:14px 19px;border-radius:10px;min-height:46px;line-height:1.3}.button.primary{background:var(--ink);color:var(--bg)}.button.primary:hover:not(:disabled){background:var(--accent);color:#22261f}.button.light{background:#eaf0e1;color:#293125}.button.secondary{background:var(--soft);color:var(--ink);border-color:var(--line)}.button.danger{background:var(--danger);color:white}.button.full{width:100%;margin-top:15px}.start-button{flex:1;justify-content:space-between;text-align:left;min-height:55px}.start-button svg{width:19px}.control-button{min-width:48px;min-height:55px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;border-radius:9px;font-size:8px;color:var(--muted);letter-spacing:.1px;padding:6px}.control-button:hover:not(:disabled){background:var(--soft)}.control-button[aria-pressed=true]{color:var(--ink)}.control-button.end-button{border:1px solid var(--line);color:var(--danger);min-width:51px}.end-button:not(:disabled):hover{background:#d58a771f}.control-divider{height:24px;width:1px;background:var(--line);margin:0 1px}.match-card{border:1px solid var(--line);border-radius:14px;padding:20px 21px;background:var(--surface)}.match-top{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-bottom:18px}.match-top h2{font-size:14px;letter-spacing:-.2px;font-weight:600}.match-top p{font-size:10px;color:var(--muted);margin-top:6px;line-height:1.5}.mode-switch{display:flex;align-items:center;border:1px solid var(--line);border-radius:8px;padding:3px;flex-shrink:0;background:var(--bg)}.mode-switch button{font-size:10px;padding:7px 9px;border-radius:5px;display:flex;gap:6px;align-items:center;color:var(--muted)}.mode-switch button svg{width:13px;height:13px}.mode-switch button[aria-pressed=true]{background:var(--ink);color:var(--bg);box-shadow:0 1px 3px #0001}.interest-form{display:flex;align-items:center;flex-wrap:wrap;gap:6px;background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:4px 7px;min-height:43px}.interest-tags{display:contents}.interest-tag{display:inline-flex;align-items:center;gap:5px;font-size:10px;background:var(--accent-soft);border-radius:5px;padding:5px 7px}.interest-tag button{font-size:14px;line-height:1;color:var(--muted);padding:0 0 0 3px}.interest-form input{flex:1;width:70px;min-width:70px;background:transparent;border:0;font-size:11px;padding:5px}.interest-form input:focus{outline:none}.interest-form:focus-within{border-color:var(--accent)}.interest-form .icon-button{width:27px;height:27px}.interest-form svg{width:16px}.interest-bottom{display:flex;align-items:center;justify-content:space-between;margin-top:12px;font-size:8px;gap:8px;color:var(--muted)}.suggestions{display:flex;gap:7px;align-items:center}.suggestions>span{font-size:7px;letter-spacing:1px;margin-right:2px}.suggestions button{font-size:9px;border:1px solid var(--line);border-radius:20px;padding:4px 8px}.suggestions button:hover{background:var(--soft)}.chat-panel{position:relative;display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;min-height:540px;max-height:850px}.chat-header{padding:21px 21px 18px;display:flex;gap:11px;align-items:center;border-bottom:1px solid var(--line)}.chat-heading-icon{display:grid;place-items:center;background:var(--soft);width:35px;height:35px;border-radius:11px}.chat-heading-icon svg{width:17px}.chat-header h2{font-size:13px;font-weight:600}.chat-header p{font-size:10px;color:var(--muted);margin-top:5px;max-width:230px;line-height:1.3}.chat-timer{margin-left:auto;font:10px Consolas,monospace;color:var(--muted)}.chat-log{flex:1;overflow-y:auto;min-height:150px;max-height:520px;padding:20px;scroll-behavior:smooth;scrollbar-width:thin;overflow-wrap:anywhere}.chat-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:100%;padding:40px 0}.empty-chat-art{position:relative;height:90px;width:125px;margin-bottom:16px}.empty-chat-art span{position:absolute;background:var(--soft);color:var(--ink);border:1px solid var(--line);border-radius:12px 12px 12px 0;padding:10px 23px;font-family:Georgia,serif;font-style:italic;font-size:23px;transform:rotate(-8deg);left:3px;top:2px}.empty-chat-art span:last-child{top:39px;right:0;left:auto;border-radius:12px 12px 0 12px;background:var(--accent-soft);border-color:transparent;color:#965639;transform:rotate(7deg);font-size:21px;padding:9px 17px}.chat-empty h3{font-size:14px;letter-spacing:-.2px;font-weight:500}.chat-empty p{font-size:11px;color:var(--muted);line-height:1.8;margin-top:10px}.empty-line{width:26px;height:1px;background:var(--line);margin:23px 0 16px}.chat-empty small{font:8px/1.8 Consolas,monospace;color:var(--muted);letter-spacing:.3px}.chat-tools{display:flex;justify-content:space-between;align-items:center;padding:9px 20px;gap:5px;min-height:35px}.text-button{font-size:10px;display:inline-flex;align-items:center;gap:5px;white-space:nowrap;padding:3px 0}.text-button:hover:not(:disabled){color:var(--accent)}.text-button svg{width:14px;height:14px}.chat-tools .text-button{color:var(--muted);font-size:9px}#typingIndicator{font-size:9px;color:var(--muted)}.message-form{margin:0 17px;display:flex;gap:7px;align-items:flex-end;border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:7px}.message-form:focus-within{border-color:var(--muted)}.message-form .icon-button{width:26px;height:31px;color:var(--muted);flex-shrink:0}.message-form .icon-button svg{width:18px}.message-form textarea{resize:none;min-height:31px;max-height:95px;flex:1;width:60px;background:none;border:0;font-size:11px;padding:7px 0;line-height:1.55}.message-form textarea:focus{outline:none}.send-button{width:32px;height:32px;display:grid;place-items:center;background:var(--ink);color:var(--bg);border-radius:7px;flex-shrink:0}.send-button svg{width:17px}.send-button:hover:not(:disabled){background:var(--accent);color:#1e2319}.chat-meta{display:flex;justify-content:space-between;margin:7px 23px 18px;font:7px/1.5 Consolas,monospace;color:var(--muted);letter-spacing:.7px}.safety-bar{border-top:1px solid var(--line);padding:14px 18px;display:flex;align-items:center;gap:12px}.safety-bar>span{display:flex;gap:6px;align-items:center;flex:1;font-size:8px;color:var(--muted)}.safety-bar svg{width:13px;height:13px}.safety-bar .text-button{font-size:9px}.system-message{font-size:10px;text-align:center;color:var(--muted);line-height:1.65;padding:8px 12px;border-radius:8px;background:var(--soft);margin:0 auto 17px;max-width:95%}.message{display:flex;flex-direction:column;align-items:flex-start;margin-bottom:14px}.message.mine{align-items:flex-end}.message-label{font:8px Consolas,monospace;color:var(--muted);margin-bottom:5px;letter-spacing:.5px}.message-bubble{padding:10px 13px;background:var(--soft);border-radius:10px 10px 10px 2px;max-width:90%;font-size:12px;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere;user-select:text}.mine .message-bubble{background:var(--ink);color:var(--bg);border-radius:10px 10px 2px 10px}.message-time{font-size:8px;color:var(--muted);margin-top:5px}.emoji-picker{position:absolute;bottom:130px;left:16px;background:var(--surface);border:1px solid var(--line);box-shadow:0 5px 20px #0002;border-radius:10px;padding:8px;display:flex;gap:2px;z-index:10}.emoji-picker button{font-size:22px;padding:5px;border-radius:6px}.emoji-picker button:hover{background:var(--soft)}.footer{display:flex;align-items:center;justify-content:space-between;gap:20px;border-top:1px solid var(--line);margin-top:34px;padding:24px 0 27px;font:8px/1.6 Consolas,monospace;letter-spacing:1px;color:var(--muted)}.footer nav{display:flex;align-items:center;gap:22px;flex-wrap:wrap}.footer nav button,.footer a{font:10px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;letter-spacing:0;padding:0}.footer nav button:hover,.footer a:hover{color:var(--ink)}.footer-note{font-size:7px;letter-spacing:.5px}
+.modal{border:1px solid var(--line);border-radius:22px;background:var(--surface);color:var(--ink);max-width:505px;width:calc(100% - 32px);padding:27px 30px;box-shadow:0 20px 120px #0005;max-height:90dvh;overflow-y:auto}.modal::backdrop{background:#141a1766;backdrop-filter:blur(5px)}.modal-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:17px}.modal-head .eyebrow{color:var(--muted)}.modal h2{font-size:29px;letter-spacing:-1px;font-weight:500;line-height:1.25;margin-bottom:15px}.modal>p{font-size:12px;color:var(--muted);line-height:1.8}.consent-points{border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:21px 0;padding:15px 0;display:grid;gap:15px}.consent-points p{display:flex;gap:13px;align-items:flex-start;font-size:11px;line-height:1.65}.consent-points svg{color:var(--green);width:19px}.small-warning{font-size:10px!important;padding:10px 12px;border-radius:8px;background:var(--accent-soft);color:var(--ink)!important;margin-bottom:18px}.check-row{display:flex;align-items:flex-start;gap:11px;font-size:12px;line-height:1.65;margin:15px 0}.check-row input{flex-shrink:0;width:16px;height:16px;margin:2px 0 0;accent-color:var(--green)}.inline-link{text-decoration:underline;text-underline-offset:2px;font:inherit;padding:0}.fine-print{font-size:10px!important;line-height:1.75;color:var(--muted);margin:10px 0}.form-error{color:var(--danger)!important;font-size:11px!important;min-height:15px;margin-top:8px;line-height:1.5}.settings-section{border-top:1px solid var(--line);padding:19px 0 4px;margin-top:19px}.settings-section h3{font:9px Consolas,monospace;color:var(--muted);letter-spacing:1.4px;margin-bottom:10px}.setting-row{display:flex;align-items:center;justify-content:space-between;gap:22px;padding:10px 0;font-size:12px}.setting-row small{font-size:10px;line-height:1.5;color:var(--muted);display:block;margin-top:5px;max-width:260px}.setting-row input[type=checkbox]{appearance:none;width:34px;height:19px;border:1px solid var(--line);border-radius:20px;background:var(--soft);position:relative;flex-shrink:0;cursor:pointer;margin:0}.setting-row input[type=checkbox]:after{content:'';display:block;position:absolute;width:13px;height:13px;border-radius:50%;background:var(--muted);top:2px;left:3px;transition:transform .15s}.setting-row input:checked{background:var(--ink);border-color:var(--ink)}.setting-row input:checked:after{transform:translateX(13px);background:var(--bg)}.setting-row input[type=range]{width:120px;accent-color:var(--green)}select{background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:8px 10px;font-size:11px;max-width:100%}.device-label{display:flex;flex-direction:column;gap:9px;margin-top:17px;font-size:11px}.device-label select{width:100%}.device-label textarea{border:1px solid var(--line);border-radius:9px;background:var(--bg);padding:11px;font-size:12px;resize:vertical}.shortcuts{font-size:10px!important;margin:22px 0 5px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}kbd{font:9px Consolas,monospace;border:1px solid var(--line);border-radius:4px;padding:3px 5px;background:var(--bg)}.info-body{font-size:12px;line-height:1.9;color:var(--muted)}.info-body h3{color:var(--ink);font-size:13px;margin:17px 0 5px}.info-body p{margin:9px 0}.info-body ul{padding-left:18px;margin:8px 0}.toast{position:fixed;bottom:25px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);border:1px solid var(--line);font-size:12px;line-height:1.6;padding:13px 20px;border-radius:11px;z-index:100;box-shadow:0 8px 30px #0003;max-width:calc(100% - 30px);width:max-content;text-align:center}.muted{color:var(--muted)}.skip-link{position:fixed;top:-60px;left:20px;padding:12px;background:var(--ink);color:var(--bg);z-index:999}.skip-link:focus{top:10px}.noscript{position:fixed;inset:0;display:grid;place-items:center;background:var(--bg);z-index:1000;padding:30px}.video-stage:fullscreen{aspect-ratio:auto;height:100dvh;width:100vw;border-radius:0}.video-stage:fullscreen .local-tile{max-width:300px}.text-chat .local-tile{display:none}.text-chat .hello-symbol{border-radius:50%;background:#e4c1a9}.text-chat .video-stage{background:#262f29}
+@keyframes pulse{50%{opacity:.35}}@media(min-width:1450px){.remote-placeholder{padding-bottom:80px}.hello-art{height:150px;width:240px}.orbit{width:180px;height:110px}.orbit-two{width:220px;height:140px}.hello-symbol{width:90px;height:90px}.chat-log{max-height:610px}}@media(max-width:1150px){.shell{padding:0 28px}.intro-note{display:none}.workspace-grid{grid-template-columns:minmax(0,1.5fr) minmax(300px,1fr);gap:17px}.video-stage{aspect-ratio:1.42}.remote-placeholder{padding:45px 22px 80px}.hello-art{transform:scale(.85);margin:-5px 0 0}.remote-placeholder h2{font-size:21px}.remote-placeholder>p:last-child{font-size:10px}.video-eyebrow{font-size:7px}.local-tile{width:27%}.call-controls{gap:5px}.start-button{font-size:11px;padding:14px}.control-button{min-width:42px}.control-divider{margin:0}.match-card{padding:18px 16px}.match-top{align-items:flex-start;flex-direction:column;gap:14px}.match-top p{font-size:11px}.mode-switch{align-self:flex-start}.chat-panel{max-height:850px}.footer-note{display:none}.footer nav{gap:15px}}@media(max-width:790px){.shell{padding:0 18px}.header{height:78px}.brand{font-size:27px}.brand-icon{width:31px;height:31px;font-size:26px;border-radius:10px;margin-right:9px}.header-right{gap:13px}.online{font-size:10px}.intro{padding:28px 0 24px}.eyebrow{font-size:8px;letter-spacing:1px}h1{font-size:32px;max-width:400px;line-height:1.18}.intro h1 em{white-space:nowrap}.workspace-grid{grid-template-columns:1fr;gap:18px}.video-stage{aspect-ratio:1.65}.remote-placeholder{padding:35px 20px 60px}.hello-art{transform:scale(.85);height:108px}.remote-placeholder h2{font-size:23px}.remote-placeholder>p:last-child{margin-top:10px}.local-tile{width:25%}.match-top{flex-direction:row;align-items:center}.chat-panel{min-height:400px;height:490px}.chat-log{max-height:none}.chat-empty{padding:15px 0}.empty-chat-art{height:70px;transform:scale(.8);margin-bottom:5px}.call-controls{gap:8px;margin-bottom:18px}.start-button{font-size:13px}.control-button{min-width:48px}.chat-header h2{font-size:14px}.chat-header p{font-size:11px}.message-form textarea{font-size:14px}.safety-bar>span{font-size:10px}.safety-bar .text-button{font-size:11px}.chat-tools .text-button{font-size:11px}.chat-meta{font-size:8px}.chat-header{padding:17px}.footer{flex-direction:column;gap:14px;margin-top:24px;padding:22px 0}.footer nav{justify-content:center;gap:18px}.footer nav button,.footer a{font-size:11px}.dev-notice{font-size:11px;align-items:flex-start}.video-bottomline{font-size:7px}.online .status-dot{width:6px;height:6px}}@media(max-width:440px){.shell{padding:0 13px}.header-right{gap:9px}.adult-pill{display:none}.intro .eyebrow{font-size:6.5px;letter-spacing:.7px}h1{font-size:28px;max-width:290px;letter-spacing:-.9px}.video-stage{aspect-ratio:1.17;border-radius:14px}.remote-placeholder{justify-content:flex-start;padding-top:55px;padding-bottom:110px}.hello-art{height:90px;transform:scale(.72);margin-bottom:0}.remote-placeholder h2{font-size:18px}.remote-placeholder>p:last-child{font-size:9px;max-width:210px;line-height:1.7}.video-eyebrow{font-size:6px;letter-spacing:1px;margin-bottom:10px}.video-topline{left:13px;right:13px;top:13px}.local-tile{width:29%;right:12px;bottom:12px}.local-placeholder>span{font-size:8px}.local-placeholder>svg{display:none}.preview-button{font-size:8px}.video-bottomline{left:12px;bottom:12px;max-width:60%;font-size:6px;letter-spacing:.5px}.call-controls{gap:5px}.start-button{font-size:11px;padding:12px;gap:4px;min-height:51px}.start-button svg{width:16px}.control-button{min-width:34px;min-height:51px;font-size:7px}.control-button.end-button{min-width:38px}.control-button svg{width:18px}.control-divider{display:none}.match-card{padding:16px}.match-top{flex-direction:column;align-items:flex-start;gap:13px}.match-top h2{font-size:13px}.interest-bottom{flex-wrap:wrap;gap:10px}.interest-bottom>span{font-size:8px}.modal{padding:22px}.modal h2{font-size:26px}.chat-panel{height:460px}.footer nav{gap:12px}.online{font-size:9px}.header-right>.icon-button{width:31px}}
+/* Keep supporting copy readable at every breakpoint, not just large displays. */
+:root:not([data-theme=dark]){--muted:#666d62}
+.eyebrow{font-size:10px}.video-eyebrow{font-size:10px;letter-spacing:1px}.video-badge{font-size:11px}.video-bottomline{font-size:9px;letter-spacing:.5px}.local-placeholder>span,.preview-button{font-size:10px}.local-label{font-size:10px}.local-label>span:last-child{font-size:9px}.control-button{font-size:10px}.match-top p{font-size:12px}.interest-form input{font-size:12px}.interest-tag{font-size:11px}.interest-bottom,.interest-bottom>span{font-size:10px}.suggestions>span{font-size:9px}.suggestions button{font-size:11px}.chat-header p{font-size:12px}.chat-empty p{font-size:12px}.chat-empty small{font-size:10px}.chat-tools .text-button,#typingIndicator{font-size:11px}.message-form textarea{font-size:13px}.chat-meta{font-size:9px}.safety-bar>span{font-size:10px}.safety-bar .text-button{font-size:11px}.system-message{font-size:12px}.message-label,.message-time{font-size:10px}.message-bubble{font-size:13px}.fine-print{font-size:11px!important}.setting-row small{font-size:11px}.footer{font-size:9px}.footer-note{font-size:9px}.empty-line{margin:18px 0 13px}
+@media(max-width:440px){.intro .eyebrow{font-size:9px;letter-spacing:.5px;max-width:275px}.video-eyebrow{font-size:8px}.remote-placeholder>p:last-child{font-size:11px;max-width:235px}.local-placeholder>span{font-size:9px}.preview-button{font-size:9px}.local-label>span:last-child{font-size:8px}.control-button{font-size:9px}.video-bottomline{font-size:8px}.local-tile{width:32%}.chat-meta{font-size:9px}.match-top p{font-size:12px}.footer-note{display:none}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+/* Full-size local preview in standalone mode. No remote participant is implied. */
+#workspace{padding-top:24px}
+.sprite-library{position:absolute;width:0;height:0;overflow:hidden;pointer-events:none}
+.preview-only .local-tile{inset:0;width:100%;height:100%;aspect-ratio:auto;border:0;border-radius:0;z-index:1;box-shadow:none}
+.preview-only .local-label{display:none}.preview-only .local-placeholder{padding:0;font-size:18px}
+.preview-only .local-placeholder>svg{display:block;width:34px;height:34px}.preview-only .local-placeholder>span{font-size:14px}
+@media(max-width:500px){#workspace{padding-top:18px}}
+
+</style>
+
+</head>
+<body>
+<svg class="sprite-library" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+  <symbol id="stranger-icon-arrow-right" viewBox="0 0 24 24"><path d="M4 12h16m-6-6 6 6-6 6"/></symbol>
+  <symbol id="stranger-icon-arrow-up" viewBox="0 0 24 24"><path d="M12 20V4m-6 6 6-6 6 6"/></symbol>
+  <symbol id="stranger-icon-next" viewBox="0 0 24 24"><path d="m5 5 10 7-10 7V5Zm14 0v14"/></symbol>
+  <symbol id="stranger-icon-camera" viewBox="0 0 24 24"><rect x="3" y="6" width="12" height="12" rx="2"/><path d="m15 10 6-3v10l-6-3"/></symbol>
+  <symbol id="stranger-icon-camera-off" viewBox="0 0 24 24"><path d="m3 3 18 18M10 6h3a2 2 0 0 1 2 2v2l6-3v10l-2-1M3 7v9a2 2 0 0 0 2 2h8"/></symbol>
+  <symbol id="stranger-icon-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2M12 19v3m-4 0h8"/></symbol>
+  <symbol id="stranger-icon-mic-off" viewBox="0 0 24 24"><path d="m3 3 18 18M9 9v3a3 3 0 0 0 5 2M9 5a3 3 0 0 1 6 1v4M5 10v2a7 7 0 0 0 11 5m3-7v2a7 7 0 0 1-1 3M12 19v3m-4 0h8"/></symbol>
+  <symbol id="stranger-icon-volume" viewBox="0 0 24 24"><path d="M4 9h4l5-5v16l-5-5H4V9Zm12-1a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/></symbol>
+  <symbol id="stranger-icon-volume-off" viewBox="0 0 24 24"><path d="M4 9h4l5-5v16l-5-5H4V9Zm13 0 5 6m0-6-5 6"/></symbol>
+  <symbol id="stranger-icon-settings" viewBox="0 0 24 24"><path d="m10 3-1 3-3-1-2 3 2 3-2 3 2 3 3-1 1 3h4l1-3 3 1 2-3-2-3 2-3-2-3-3 1-1-3h-4Z"/><circle cx="12" cy="11" r="3"/></symbol>
+  <symbol id="stranger-icon-message" viewBox="0 0 24 24"><path d="M21 11a8 8 0 0 1-8 8H8l-5 3V7a4 4 0 0 1 4-4h6a8 8 0 0 1 8 8Z"/><path d="M7 8h9m-9 5h6"/></symbol>
+  <symbol id="stranger-icon-shield" viewBox="0 0 24 24"><path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6l8-3Z"/><path d="m8 12 3 3 5-6"/></symbol>
+  <symbol id="stranger-icon-smile" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 14c2 3 6 3 8 0M8 9h.01M16 9h.01"/></symbol>
+  <symbol id="stranger-icon-spark" viewBox="0 0 24 24"><path d="m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5L12 3Z"/></symbol>
+  <symbol id="stranger-icon-stop" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/></symbol>
+  <symbol id="stranger-icon-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="stranger-icon-x" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+  <symbol id="stranger-icon-expand" viewBox="0 0 24 24"><path d="M9 3H3v6m12-6h6v6M3 15v6h6m12-6v6h-6"/></symbol>
+  <symbol id="stranger-icon-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 10v6m0-9h.01"/></symbol>
+  <symbol id="stranger-icon-eye" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="stranger-icon-wave" viewBox="0 0 24 24"><path d="M3 13c3 0 3-6 6-6s3 10 6 10 3-6 6-6"/></symbol>
+</svg>
+
+  <a class="skip-link" href="#workspace">Skip to chat</a>
+  <div class="shell">
+    <header class="header">
+      <a class="brand" href="#workspace" aria-label="Stranger home"><span class="brand-icon" aria-hidden="true">s</span>stranger<span class="brand-dot">.</span></a>
+      <div class="header-right">
+        <span class="online"><span id="onlineDot" class="status-dot"></span><span id="onlineCount">Connecting…</span></span>
+        <span class="adult-pill">18+</span>
+        <button id="settingsButton" class="icon-button" aria-label="Open settings" title="Settings"><svg><use href="#stranger-icon-settings"></use></svg></button>
+      </div>
+    </header>
+
+    <main id="workspace" aria-label="Chat workspace">
+      <div id="devNotice" class="dev-notice" hidden><svg><use href="#stranger-icon-info"></use></svg><span>Local test mode. Open this address in a normal window and a private window to try a two-person chat. There are no simulated users.</span><button id="hideDev" class="text-button" aria-label="Dismiss local test notice">Got it</button></div>
+      <div id="connectionNotice" class="connection-notice" role="status" hidden></div>
+
+      <div class="workspace-grid">
+        <section class="video-column" aria-label="Video and matching controls">
+          <div id="videoStage" class="video-stage">
+            <video id="remoteVideo" autoplay playsinline aria-label="Other participant's video"></video>
+            <div class="video-topline"><span class="video-badge"><span id="stageDot" class="status-dot"></span><span id="stageStatus">Ready when you are</span></span><span id="remoteMedia" class="video-badge" hidden>Mic muted</span></div>
+            <div id="remotePlaceholder" class="remote-placeholder">
+              <div class="hello-art" aria-hidden="true"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="hello-symbol"><svg><use href="#stranger-icon-wave"></use></svg></div><span class="art-spark spark-one">✳</span><span class="art-spark spark-two">+</span></div>
+              <p id="remoteEyebrow" class="video-eyebrow">SOMEONE NEW, SOMETHING DIFFERENT</p>
+              <h2 id="remoteTitle">The next good conversation<br>could be one click away.</h2>
+              <p id="remoteHint">Pick your mode below. Show up as yourself.</p>
+            </div>
+            <div id="revealOverlay" class="reveal-overlay" hidden><svg><use href="#stranger-icon-eye"></use></svg><p>Your connection is ready.</p><button id="revealButton" class="button light">Reveal video</button><small>You're in control of what you see.</small></div>
+            <button id="playRemote" class="button play-remote" hidden>Tap to hear your conversation</button>
+            <div class="video-bottomline"><span id="networkLabel">CAMERA OFF · NOT SHARING</span><button id="fullscreenButton" class="icon-button on-video" aria-label="Enter fullscreen" title="Fullscreen"><svg><use href="#stranger-icon-expand"></use></svg></button></div>
+            <div id="localTile" class="local-tile">
+              <video id="localVideo" autoplay playsinline muted aria-label="Your camera preview"></video>
+              <div id="localPlaceholder" class="local-placeholder"><svg><use href="#stranger-icon-camera-off"></use></svg><span id="localHint">Your camera is off</span><button id="previewButton" class="preview-button">Enable preview</button></div>
+              <div class="local-label"><span>You</span><span id="localMicStatus">OFF</span></div>
+            </div>
+          </div>
+
+          <div class="call-controls">
+            <button id="startButton" class="button primary start-button" disabled><span id="startLabel">Start a conversation</span><svg><use id="startIcon" href="#stranger-icon-arrow-right"></use></svg></button>
+            <button id="endButton" class="control-button end-button" disabled title="End chat and turn off devices (Esc)" aria-label="End chat and turn off devices"><svg><use href="#stranger-icon-stop"></use></svg><span>End</span></button>
+            <div class="control-divider"></div>
+            <button id="micButton" class="control-button" disabled aria-label="Unmute microphone" aria-pressed="false" title="Microphone (M)"><svg><use id="micIcon" href="#stranger-icon-mic-off"></use></svg><span id="micLabel">Mic off</span></button>
+            <button id="cameraButton" class="control-button" disabled aria-label="Turn camera on" aria-pressed="false" title="Camera (V)"><svg><use id="cameraIcon" href="#stranger-icon-camera-off"></use></svg><span id="cameraLabel">Cam off</span></button>
+            <button id="speakerButton" class="control-button" aria-label="Mute other participant" aria-pressed="true" title="Speaker"><svg><use id="speakerIcon" href="#stranger-icon-volume"></use></svg><span id="speakerLabel">Sound</span></button>
+          </div>
+
+          <section class="match-card">
+            <div class="match-top"><div><h2>Your kind of conversation.</h2><p>A common interest is a good place to start.</p></div><div class="mode-switch" role="group" aria-label="Chat mode"><button id="videoMode" aria-pressed="true"><svg><use href="#stranger-icon-camera"></use></svg>Video</button><button id="textMode" aria-pressed="false"><svg><use href="#stranger-icon-message"></use></svg>Text</button></div></div>
+            <form id="interestForm" class="interest-form"><div id="interestTags" class="interest-tags" aria-label="Selected interests"></div><input id="interestInput" aria-label="Add an interest" maxlength="24" placeholder="Add interests…" autocomplete="off"><button id="addInterest" class="icon-button" aria-label="Add interest" title="Add interest"><svg><use href="#stranger-icon-plus"></use></svg></button></form>
+            <div class="interest-bottom"><div class="suggestions"><span>TRY</span><button type="button" data-interest="music">music</button><button type="button" data-interest="gaming">gaming</button><button type="button" data-interest="art">art</button></div><span id="matchHint">Interests optional · max 6</span></div>
+          </section>
+        </section>
+
+        <section class="chat-panel" aria-labelledby="chatTitle">
+          <div class="chat-header"><div class="chat-heading-icon"><svg><use href="#stranger-icon-message"></use></svg></div><div><h2 id="chatTitle">The conversation</h2><p id="chatSubtitle">Waiting for a little hello</p></div><span id="chatTimer" class="chat-timer" hidden>00:00</span></div>
+          <div id="chatLog" class="chat-log" role="log" aria-live="polite" aria-relevant="additions text" aria-label="Conversation messages">
+            <div id="chatEmpty" class="chat-empty"><div class="empty-chat-art" aria-hidden="true"><span>hi.</span><span>hey!</span></div><h3>Start with something simple.</h3><p>Say hello, ask about their day,<br>or find a little common ground.</p><div class="empty-line"></div><small>No profiles. No follower counts.<br>Just a conversation.</small></div>
+          </div>
+          <div class="chat-tools"><button id="icebreakerButton" class="text-button" disabled><svg><use href="#stranger-icon-spark"></use></svg>Need an icebreaker?</button><span id="typingIndicator" role="status"></span></div>
+          <form id="messageForm" class="message-form"><button id="emojiButton" class="icon-button" type="button" disabled aria-label="Choose an emoji" aria-expanded="false"><svg><use href="#stranger-icon-smile"></use></svg></button><textarea id="messageInput" rows="1" maxlength="1000" placeholder="Connect to start chatting…" aria-label="Message" disabled></textarea><button id="sendButton" class="send-button" disabled aria-label="Send message"><svg><use href="#stranger-icon-arrow-up"></use></svg></button></form>
+          <div id="emojiPicker" class="emoji-picker" hidden><button aria-label="Wave">👋</button><button aria-label="Smile">😊</button><button aria-label="Laugh">😂</button><button aria-label="Celebrate">🎉</button><button aria-label="Thumbs up">👍</button><button aria-label="Sparkles">✨</button></div>
+          <div class="chat-meta"><span id="characterCount">0 / 1000</span><span>ENTER TO SEND</span></div>
+          <div class="safety-bar"><span><svg><use href="#stranger-icon-shield"></use></svg>Keep it kind. Keep it human.</span><button id="blockButton" class="text-button" disabled>Block</button><button id="reportButton" class="text-button" disabled>Report</button></div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="footer"><span>LESS ALGORITHM. MORE SERENDIPITY.</span><nav aria-label="Information"><button data-info="rules">Community rules</button><button data-info="privacy">Privacy</button><button data-info="help">How it works</button><button data-info="upload">Website setup</button></nav><span class="footer-note">A SIMPLE HELLO CAN GO A LONG WAY. ↗</span></footer>
+  </div>
+
+  <dialog id="consentDialog" class="modal consent-modal">
+    <div class="modal-head"><span class="eyebrow">01 / BEFORE WE BEGIN</span><button class="icon-button" data-close="consentDialog" aria-label="Close"><svg><use href="#stranger-icon-x"></use></svg></button></div>
+    <h2>Before you <em>say hello.</em></h2><p>Real people are on the other side. Let's keep this a good place to meet.</p>
+    <div class="consent-points"><p><svg><use href="#stranger-icon-camera"></use></svg><span id="consentMediaNote">Your browser will ask before using your camera and microphone. In preview mode, nothing is sent to another person.</span></p><p><svg><use href="#stranger-icon-shield"></use></svg><span>Leave, block, or report at any time. Never share private information. Other people may record their screen.</span></p></div>
+    <p id="directWarning" class="small-warning">Local test mode uses direct video, which may reveal your IP address to the other person.</p>
+    <label class="check-row"><input id="adultConsent" type="checkbox"><span>I am at least <strong>18 years old.</strong></span></label>
+    <label class="check-row"><input id="rulesConsent" type="checkbox"><span>I agree to the <button class="inline-link" type="button" data-info="rules">community rules</button> and have read the <button class="inline-link" type="button" data-info="privacy">privacy notice</button>.</span></label>
+    <p class="fine-print">This is an age declaration, not identity or age verification.</p><p id="consentError" class="form-error" role="alert"></p>
+    <button id="agreeButton" class="button primary full" disabled>Agree & continue <svg><use href="#stranger-icon-arrow-right"></use></svg></button>
+  </dialog>
+
+  <dialog id="settingsDialog" class="modal settings-modal">
+    <div class="modal-head"><span class="eyebrow">MAKE YOURSELF AT HOME</span><button class="icon-button" data-close="settingsDialog" aria-label="Close settings"><svg><use href="#stranger-icon-x"></use></svg></button></div>
+    <h2>A few little <em>preferences.</em></h2>
+    <div class="settings-section"><h3>THE LOOK</h3><label class="setting-row"><span>Appearance</span><select id="themeSetting"><option value="light">Light</option><option value="dark">Dark</option><option value="system">Match device</option></select></label><label class="setting-row"><span>Mirror my preview<small>Only changes what you see.</small></span><input id="mirrorSetting" type="checkbox" checked></label><label class="setting-row"><span>Blur new videos<small>Click Reveal when you're ready. Not a content filter.</small></span><input id="blurSetting" type="checkbox" checked></label></div>
+    <div class="settings-section"><h3>THE CONVERSATION</h3><label class="setting-row"><span>Strict interest matching<small>Wait for a shared interest. No automatic fallback.</small></span><input id="strictSetting" type="checkbox"></label><label class="setting-row"><span>Automatically find the next person<small>After they leave; never after you press End.</small></span><input id="autoNextSetting" type="checkbox"></label><label class="setting-row"><span>Connection chime<small>A short sound when someone connects.</small></span><input id="soundsSetting" type="checkbox"></label><label class="setting-row"><span>Speaker volume</span><input id="volumeSetting" type="range" min="0" max="100" value="100" aria-label="Speaker volume"></label></div>
+    <div class="settings-section"><h3>YOUR DEVICES</h3><p class="fine-print">Device names appear after permission is granted. End the chat before changing devices. Changes apply to your next preview.</p><label class="device-label">Camera<select id="cameraSelect"><option value="">Default camera</option></select></label><label class="device-label">Microphone<select id="micSelect"><option value="">Default microphone</option></select></label><p id="relayInfo" class="fine-print"></p></div>
+    <p class="shortcuts"><kbd>M</kbd> Mic <kbd>V</kbd> Camera <kbd>Esc</kbd> End <kbd>Alt</kbd> + <kbd>N</kbd> Next</p><button class="button primary full" data-close="settingsDialog">Done</button>
+  </dialog>
+
+  <dialog id="reportDialog" class="modal">
+    <div class="modal-head"><span class="eyebrow">LOOKING OUT FOR EACH OTHER</span><button class="icon-button" data-close="reportDialog" aria-label="Close report"><svg><use href="#stranger-icon-x"></use></svg></button></div><h2>Report this <em>conversation.</em></h2><p>The conversation has been ended and your devices turned off. Reports go to this site's operator, not an automatic moderation service.</p>
+    <form id="reportForm"><label class="device-label">What happened?<select id="reportReason" required><option value="" disabled selected>Choose a reason</option><option value="sexual-content">Sexual content or nudity</option><option value="underage">Someone may be under 18</option><option value="harassment">Harassment or threats</option><option value="hate">Hateful behavior</option><option value="spam">Spam or scam</option><option value="other">Something else</option></select></label><label class="device-label">Anything else? <span class="muted">(optional)</span><textarea id="reportDetails" maxlength="1000" rows="3" placeholder="Describe what happened. Do not include private information."></textarea></label><label class="check-row"><input id="includeTranscript" type="checkbox"><span>Include the last 20 text messages for the moderator to review. No video or audio is recorded.</span></label><p class="fine-print">Submitting also blocks this browser from matching with yours. Blocks cannot reliably identify someone who clears their cookies.</p><p id="reportError" class="form-error" role="alert"></p><button id="submitReport" class="button primary full">Submit report & block</button></form>
+  </dialog>
+
+  <dialog id="infoDialog" class="modal info-modal"><div class="modal-head"><span class="eyebrow">THE IMPORTANT STUFF</span><button class="icon-button" data-close="infoDialog" aria-label="Close information"><svg><use href="#stranger-icon-x"></use></svg></button></div><h2 id="infoTitle"></h2><div id="infoBody" class="info-body"></div><button class="button primary full" data-close="infoDialog">Understood</button></dialog>
+  <div id="toast" class="toast" role="status" hidden></div>
+  <noscript><div class="noscript">Stranger needs JavaScript to connect you. Enable it and reload this page.</div></noscript>
+<!-- Bundled Socket.IO client license:
+The MIT License (MIT)
+
+Copyright (c) 2014-present Guillermo Rauch and Socket.IO contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+-->
+<script id="stranger-socket-client">
+/*!
+ * Socket.IO v4.8.4
+ * (c) 2014-2026 Guillermo Rauch
+ * Released under the MIT License.
+ */
+!function(t,n){"object"==typeof exports&&"undefined"!=typeof module?module.exports=n():"function"==typeof define&&define.amd?define(n):(t="undefined"!=typeof globalThis?globalThis:t||self).io=n()}(this,(function(){"use strict";function t(t,n){(null==n||n>t.length)&&(n=t.length);for(var i=0,r=Array(n);i<n;i++)r[i]=t[i];return r}function n(t,n){for(var i=0;i<n.length;i++){var r=n[i];r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(t,c(r.key),r)}}function i(t,i,r){return i&&n(t.prototype,i),r&&n(t,r),Object.defineProperty(t,"prototype",{writable:!1}),t}function r(t,n){var i="undefined"!=typeof Symbol&&t[Symbol.iterator]||t["@@iterator"];if(!i){if(Array.isArray(t)||(i=v(t))||n&&t&&"number"==typeof t.length){i&&(t=i);var r=0,e=function(){};return{s:e,n:function(){return r>=t.length?{done:!0}:{done:!1,value:t[r++]}},e:function(t){throw t},f:e}}throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}var o,s=!0,u=!1;return{s:function(){i=i.call(t)},n:function(){var t=i.next();return s=t.done,t},e:function(t){u=!0,o=t},f:function(){try{s||null==i.return||i.return()}finally{if(u)throw o}}}}function e(){return e=Object.assign?Object.assign.bind():function(t){for(var n=1;n<arguments.length;n++){var i=arguments[n];for(var r in i)({}).hasOwnProperty.call(i,r)&&(t[r]=i[r])}return t},e.apply(null,arguments)}function o(t){return o=Object.setPrototypeOf?Object.getPrototypeOf.bind():function(t){return t.__proto__||Object.getPrototypeOf(t)},o(t)}function s(t,n){t.prototype=Object.create(n.prototype),t.prototype.constructor=t,h(t,n)}function u(){try{var t=!Boolean.prototype.valueOf.call(Reflect.construct(Boolean,[],(function(){})))}catch(t){}return(u=function(){return!!t})()}function h(t,n){return h=Object.setPrototypeOf?Object.setPrototypeOf.bind():function(t,n){return t.__proto__=n,t},h(t,n)}function f(n){return function(n){if(Array.isArray(n))return t(n)}(n)||function(t){if("undefined"!=typeof Symbol&&null!=t[Symbol.iterator]||null!=t["@@iterator"])return Array.from(t)}(n)||v(n)||function(){throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}()}function c(t){var n=function(t,n){if("object"!=typeof t||!t)return t;var i=t[Symbol.toPrimitive];if(void 0!==i){var r=i.call(t,n||"default");if("object"!=typeof r)return r;throw new TypeError("@@toPrimitive must return a primitive value.")}return("string"===n?String:Number)(t)}(t,"string");return"symbol"==typeof n?n:n+""}function a(t){return a="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t},a(t)}function v(n,i){if(n){if("string"==typeof n)return t(n,i);var r={}.toString.call(n).slice(8,-1);return"Object"===r&&n.constructor&&(r=n.constructor.name),"Map"===r||"Set"===r?Array.from(n):"Arguments"===r||/^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(r)?t(n,i):void 0}}function l(t){var n="function"==typeof Map?new Map:void 0;return l=function(t){if(null===t||!function(t){try{return-1!==Function.toString.call(t).indexOf("[native code]")}catch(n){return"function"==typeof t}}(t))return t;if("function"!=typeof t)throw new TypeError("Super expression must either be null or a function");if(void 0!==n){if(n.has(t))return n.get(t);n.set(t,i)}function i(){return function(t,n,i){if(u())return Reflect.construct.apply(null,arguments);var r=[null];r.push.apply(r,n);var e=new(t.bind.apply(t,r));return i&&h(e,i.prototype),e}(t,arguments,o(this).constructor)}return i.prototype=Object.create(t.prototype,{constructor:{value:i,enumerable:!1,writable:!0,configurable:!0}}),h(i,t)},l(t)}var p=Object.create(null);p.open="0",p.close="1",p.ping="2",p.pong="3",p.message="4",p.upgrade="5",p.noop="6";var d=Object.create(null);Object.keys(p).forEach((function(t){d[p[t]]=t}));var y,b={type:"error",data:"parser error"},w="function"==typeof Blob||"undefined"!=typeof Blob&&"[object BlobConstructor]"===Object.prototype.toString.call(Blob),g="function"==typeof ArrayBuffer,m=function(t){return"function"==typeof ArrayBuffer.isView?ArrayBuffer.isView(t):t&&t.buffer instanceof ArrayBuffer},k=function(t,n,i){var r=t.type,e=t.data;return w&&e instanceof Blob?n?i(e):A(e,i):g&&(e instanceof ArrayBuffer||m(e))?n?i(e):A(new Blob([e]),i):i(p[r]+(e||""))},A=function(t,n){var i=new FileReader;return i.onload=function(){var t=i.result.split(",")[1];n("b"+(t||""))},i.readAsDataURL(t)};function E(t){return t instanceof Uint8Array?t:t instanceof ArrayBuffer?new Uint8Array(t):new Uint8Array(t.buffer,t.byteOffset,t.byteLength)}for(var j="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/",O="undefined"==typeof Uint8Array?[]:new Uint8Array(256),B=0;B<64;B++)O[j.charCodeAt(B)]=B;var S,N="function"==typeof ArrayBuffer,T=function(t,n){if("string"!=typeof t)return{type:"message",data:U(t,n)};var i=t.charAt(0);return"b"===i?{type:"message",data:C(t.substring(1),n)}:d[i]?t.length>1?{type:d[i],data:t.substring(1)}:{type:d[i]}:b},C=function(t,n){if(N){var i=function(t){var n,i,r,e,o,s=.75*t.length,u=t.length,h=0;"="===t[t.length-1]&&(s--,"="===t[t.length-2]&&s--);var f=new ArrayBuffer(s),c=new Uint8Array(f);for(n=0;n<u;n+=4)i=O[t.charCodeAt(n)],r=O[t.charCodeAt(n+1)],e=O[t.charCodeAt(n+2)],o=O[t.charCodeAt(n+3)],c[h++]=i<<2|r>>4,c[h++]=(15&r)<<4|e>>2,c[h++]=(3&e)<<6|63&o;return f}(t);return U(i,n)}return{base64:!0,data:t}},U=function(t,n){return"blob"===n?t instanceof Blob?t:new Blob([t]):t instanceof ArrayBuffer?t:t.buffer},M=String.fromCharCode(30);function I(){return new TransformStream({transform:function(t,n){!function(t,n){w&&t.data instanceof Blob?t.data.arrayBuffer().then(E).then(n):g&&(t.data instanceof ArrayBuffer||m(t.data))?n(E(t.data)):k(t,!1,(function(t){y||(y=new TextEncoder),n(y.encode(t))}))}(t,(function(i){var r,e=i.length;if(e<126)r=new Uint8Array(1),new DataView(r.buffer).setUint8(0,e);else if(e<65536){r=new Uint8Array(3);var o=new DataView(r.buffer);o.setUint8(0,126),o.setUint16(1,e)}else{r=new Uint8Array(9);var s=new DataView(r.buffer);s.setUint8(0,127),s.setBigUint64(1,BigInt(e))}t.data&&"string"!=typeof t.data&&(r[0]|=128),n.enqueue(r),n.enqueue(i)}))}})}function x(t){return t.reduce((function(t,n){return t+n.length}),0)}function R(t,n){if(t[0].length===n)return t.shift();for(var i=new Uint8Array(n),r=0,e=0;e<n;e++)i[e]=t[0][r++],r===t[0].length&&(t.shift(),r=0);return t.length&&r<t[0].length&&(t[0]=t[0].slice(r)),i}function L(t){if(t)return function(t){for(var n in L.prototype)t[n]=L.prototype[n];return t}(t)}L.prototype.on=L.prototype.addEventListener=function(t,n){return this.t=this.t||{},(this.t["$"+t]=this.t["$"+t]||[]).push(n),this},L.prototype.once=function(t,n){function i(){this.off(t,i),n.apply(this,arguments)}return i.fn=n,this.on(t,i),this},L.prototype.off=L.prototype.removeListener=L.prototype.removeAllListeners=L.prototype.removeEventListener=function(t,n){if(this.t=this.t||{},0==arguments.length)return this.t={},this;var i,r=this.t["$"+t];if(!r)return this;if(1==arguments.length)return delete this.t["$"+t],this;for(var e=0;e<r.length;e++)if((i=r[e])===n||i.fn===n){r.splice(e,1);break}return 0===r.length&&delete this.t["$"+t],this},L.prototype.emit=function(t){this.t=this.t||{};for(var n=new Array(arguments.length-1),i=this.t["$"+t],r=1;r<arguments.length;r++)n[r-1]=arguments[r];if(i){r=0;for(var e=(i=i.slice(0)).length;r<e;++r)i[r].apply(this,n)}return this},L.prototype.emitReserved=L.prototype.emit,L.prototype.listeners=function(t){return this.t=this.t||{},this.t["$"+t]||[]},L.prototype.hasListeners=function(t){return!!this.listeners(t).length};var _="function"==typeof Promise&&"function"==typeof Promise.resolve?function(t){return Promise.resolve().then(t)}:function(t,n){return n(t,0)},D="undefined"!=typeof self?self:"undefined"!=typeof window?window:Function("return this")();function P(t){for(var n=arguments.length,i=new Array(n>1?n-1:0),r=1;r<n;r++)i[r-1]=arguments[r];return i.reduce((function(n,i){return t.hasOwnProperty(i)&&(n[i]=t[i]),n}),{})}var $=D.setTimeout,F=D.clearTimeout;function V(t,n){n.useNativeTimers?(t.setTimeoutFn=$.bind(D),t.clearTimeoutFn=F.bind(D)):(t.setTimeoutFn=D.setTimeout.bind(D),t.clearTimeoutFn=D.clearTimeout.bind(D))}function q(){return Date.now().toString(36).substring(3)+Math.random().toString(36).substring(2,5)}var X=function(t){function n(n,i,r){var e;return(e=t.call(this,n)||this).description=i,e.context=r,e.type="TransportError",e}return s(n,t),n}(l(Error)),H=function(t){function n(n){var i;return(i=t.call(this)||this).writable=!1,V(i,n),i.opts=n,i.query=n.query,i.socket=n.socket,i.supportsBinary=!n.forceBase64,i}s(n,t);var i=n.prototype;return i.onError=function(n,i,r){return t.prototype.emitReserved.call(this,"error",new X(n,i,r)),this},i.open=function(){return this.readyState="opening",this.doOpen(),this},i.close=function(){return"opening"!==this.readyState&&"open"!==this.readyState||(this.doClose(),this.onClose()),this},i.send=function(t){"open"===this.readyState&&this.write(t)},i.onOpen=function(){this.readyState="open",this.writable=!0,t.prototype.emitReserved.call(this,"open")},i.onData=function(t){var n=T(t,this.socket.binaryType);this.onPacket(n)},i.onPacket=function(n){t.prototype.emitReserved.call(this,"packet",n)},i.onClose=function(n){this.readyState="closed",t.prototype.emitReserved.call(this,"close",n)},i.pause=function(t){},i.createUri=function(t){var n=arguments.length>1&&void 0!==arguments[1]?arguments[1]:{};return t+"://"+this.i()+this.o()+this.opts.path+this.u(n)},i.i=function(){var t=this.opts.hostname;return-1===t.indexOf(":")?t:"["+t+"]"},i.o=function(){return this.opts.port&&(this.opts.secure&&443!==Number(this.opts.port)||!this.opts.secure&&80!==Number(this.opts.port))?":"+this.opts.port:""},i.u=function(t){var n=function(t){var n="";for(var i in t)t.hasOwnProperty(i)&&(n.length&&(n+="&"),n+=encodeURIComponent(i)+"="+encodeURIComponent(t[i]));return n}(t);return n.length?"?"+n:""},n}(L),z=function(t){function n(){var n;return(n=t.apply(this,arguments)||this).h=!1,n}s(n,t);var r=n.prototype;return r.doOpen=function(){this.v()},r.pause=function(t){var n=this;this.readyState="pausing";var i=function(){n.readyState="paused",t()};if(this.h||!this.writable){var r=0;this.h&&(r++,this.once("pollComplete",(function(){--r||i()}))),this.writable||(r++,this.once("drain",(function(){--r||i()})))}else i()},r.v=function(){this.h=!0,this.doPoll(),this.emitReserved("poll")},r.onData=function(t){var n=this;(function(t,n){for(var i=t.split(M),r=[],e=0;e<i.length;e++){var o=T(i[e],n);if(r.push(o),"error"===o.type)break}return r})(t,this.socket.binaryType).forEach((function(t){if("opening"===n.readyState&&"open"===t.type&&n.onOpen(),"close"===t.type)return n.onClose({description:"transport closed by the server"}),!1;n.onPacket(t)})),"closed"!==this.readyState&&(this.h=!1,this.emitReserved("pollComplete"),"open"===this.readyState&&this.v())},r.doClose=function(){var t=this,n=function(){t.write([{type:"close"}])};"open"===this.readyState?n():this.once("open",n)},r.write=function(t){var n=this;this.writable=!1,function(t,n){var i=t.length,r=new Array(i),e=0;t.forEach((function(t,o){k(t,!1,(function(t){r[o]=t,++e===i&&n(r.join(M))}))}))}(t,(function(t){n.doWrite(t,(function(){n.writable=!0,n.emitReserved("drain")}))}))},r.uri=function(){var t=this.opts.secure?"https":"http",n=this.query||{};return!1!==this.opts.timestampRequests&&(n[this.opts.timestampParam]=q()),this.supportsBinary||n.sid||(n.b64=1),this.createUri(t,n)},i(n,[{key:"name",get:function(){return"polling"}}])}(H),J=!1;try{J="undefined"!=typeof XMLHttpRequest&&"withCredentials"in new XMLHttpRequest}catch(t){}var K=J;function Y(){}var G=function(t){function n(n){var i;if(i=t.call(this,n)||this,"undefined"!=typeof location){var r="https:"===location.protocol,e=location.port;e||(e=r?"443":"80"),i.xd="undefined"!=typeof location&&n.hostname!==location.hostname||e!==n.port}return i}s(n,t);var i=n.prototype;return i.doWrite=function(t,n){var i=this,r=this.request({method:"POST",data:t});r.on("success",n),r.on("error",(function(t,n){i.onError("xhr post error",t,n)}))},i.doPoll=function(){var t=this,n=this.request();n.on("data",this.onData.bind(this)),n.on("error",(function(n,i){t.onError("xhr poll error",n,i)})),this.pollXhr=n},n}(z),Q=function(t){function n(n,i,r){var e;return(e=t.call(this)||this).createRequest=n,V(e,r),e.l=r,e.p=r.method||"GET",e.m=i,e.k=void 0!==r.data?r.data:null,e.A(),e}s(n,t);var i=n.prototype;return i.A=function(){var t,i=this,r=P(this.l,"agent","pfx","key","passphrase","cert","ca","ciphers","rejectUnauthorized","autoUnref");r.xdomain=!!this.l.xd;var e=this.j=this.createRequest(r);try{e.open(this.p,this.m,!0);try{if(this.l.extraHeaders)for(var o in e.setDisableHeaderCheck&&e.setDisableHeaderCheck(!0),this.l.extraHeaders)this.l.extraHeaders.hasOwnProperty(o)&&e.setRequestHeader(o,this.l.extraHeaders[o])}catch(t){}if("POST"===this.p)try{e.setRequestHeader("Content-type","text/plain;charset=UTF-8")}catch(t){}try{e.setRequestHeader("Accept","*/*")}catch(t){}null===(t=this.l.cookieJar)||void 0===t||t.addCookies(e),"withCredentials"in e&&(e.withCredentials=this.l.withCredentials),this.l.requestTimeout&&(e.timeout=this.l.requestTimeout),e.onreadystatechange=function(){var t;3===e.readyState&&(null===(t=i.l.cookieJar)||void 0===t||t.parseCookies(e.getResponseHeader("set-cookie"))),4===e.readyState&&(200===e.status||1223===e.status?i.O():i.setTimeoutFn((function(){i.B("number"==typeof e.status?e.status:0)}),0))},e.send(this.k)}catch(t){return void this.setTimeoutFn((function(){i.B(t)}),0)}"undefined"!=typeof document&&(this.S=n.requestsCount++,n.requests[this.S]=this)},i.B=function(t){this.emitReserved("error",t,this.j),this.N(!0)},i.N=function(t){if(void 0!==this.j&&null!==this.j){if(this.j.onreadystatechange=Y,t)try{this.j.abort()}catch(t){}"undefined"!=typeof document&&delete n.requests[this.S],this.j=null}},i.O=function(){var t=this.j.responseText;null!==t&&(this.emitReserved("data",t),this.emitReserved("success"),this.N())},i.abort=function(){this.N()},n}(L);if(Q.requestsCount=0,Q.requests={},"undefined"!=typeof document)if("function"==typeof attachEvent)attachEvent("onunload",W);else if("function"==typeof addEventListener){addEventListener("onpagehide"in D?"pagehide":"unload",W,!1)}function W(){for(var t in Q.requests)Q.requests.hasOwnProperty(t)&&Q.requests[t].abort()}var Z,tt=(Z=it({xdomain:!1}))&&null!==Z.responseType,nt=function(t){function n(n){var i;i=t.call(this,n)||this;var r=n&&n.forceBase64;return i.supportsBinary=tt&&!r,i}return s(n,t),n.prototype.request=function(){var t=arguments.length>0&&void 0!==arguments[0]?arguments[0]:{};return e(t,{xd:this.xd},this.opts),new Q(it,this.uri(),t)},n}(G);function it(t){var n=t.xdomain;try{if("undefined"!=typeof XMLHttpRequest&&(!n||K))return new XMLHttpRequest}catch(t){}if(!n)try{return new(D[["Active"].concat("Object").join("X")])("Microsoft.XMLHTTP")}catch(t){}}var rt="undefined"!=typeof navigator&&"string"==typeof navigator.product&&"reactnative"===navigator.product.toLowerCase(),et=function(t){function n(){return t.apply(this,arguments)||this}s(n,t);var r=n.prototype;return r.doOpen=function(){var t=this.uri(),n=this.opts.protocols,i=rt?{}:P(this.opts,"agent","perMessageDeflate","pfx","key","passphrase","cert","ca","ciphers","rejectUnauthorized","localAddress","protocolVersion","origin","maxPayload","family","checkServerIdentity");this.opts.extraHeaders&&(i.headers=this.opts.extraHeaders);try{this.ws=this.createSocket(t,n,i)}catch(t){return this.emitReserved("error",t)}this.ws.binaryType=this.socket.binaryType,this.addEventListeners()},r.addEventListeners=function(){var t=this;this.ws.onopen=function(){t.opts.autoUnref&&t.ws.T.unref(),t.onOpen()},this.ws.onclose=function(n){return t.onClose({description:"websocket connection closed",context:n})},this.ws.onmessage=function(n){return t.onData(n.data)},this.ws.onerror=function(n){return t.onError("websocket error",n)}},r.write=function(t){var n=this;this.writable=!1;for(var i=function(){var i=t[r],e=r===t.length-1;k(i,n.supportsBinary,(function(t){try{n.doWrite(i,t)}catch(t){}e&&_((function(){n.writable=!0,n.emitReserved("drain")}),n.setTimeoutFn)}))},r=0;r<t.length;r++)i()},r.doClose=function(){void 0!==this.ws&&(this.ws.onerror=function(){},this.ws.close(),this.ws=null)},r.uri=function(){var t=this.opts.secure?"wss":"ws",n=this.query||{};return this.opts.timestampRequests&&(n[this.opts.timestampParam]=q()),this.supportsBinary||(n.b64=1),this.createUri(t,n)},i(n,[{key:"name",get:function(){return"websocket"}}])}(H),ot=D.WebSocket||D.MozWebSocket,st=function(t){function n(){return t.apply(this,arguments)||this}s(n,t);var i=n.prototype;return i.createSocket=function(t,n,i){return rt?new ot(t,n,i):n?new ot(t,n):new ot(t)},i.doWrite=function(t,n){this.ws.send(n)},n}(et),ut=function(t){function n(){return t.apply(this,arguments)||this}s(n,t);var r=n.prototype;return r.doOpen=function(){var t=this;try{this.C=new WebTransport(this.createUri("https"),this.opts.transportOptions[this.name])}catch(t){return this.emitReserved("error",t)}this.C.closed.then((function(){t.onClose()})).catch((function(n){t.onError("webtransport error",n)})),this.C.ready.then((function(){t.C.createBidirectionalStream().then((function(n){var i=function(t,n){S||(S=new TextDecoder);var i=[],r=0,e=-1,o=!1;return new TransformStream({transform:function(s,u){for(i.push(s);;){if(0===r){if(x(i)<1)break;var h=R(i,1);o=!(128&~h[0]),e=127&h[0],r=e<126?3:126===e?1:2}else if(1===r){if(x(i)<2)break;var f=R(i,2);e=new DataView(f.buffer,f.byteOffset,f.length).getUint16(0),r=3}else if(2===r){if(x(i)<8)break;var c=R(i,8),a=new DataView(c.buffer,c.byteOffset,c.length),v=a.getUint32(0);if(v>Math.pow(2,21)-1){u.enqueue(b);break}e=v*Math.pow(2,32)+a.getUint32(4),r=3}else{if(x(i)<e)break;var l=R(i,e);u.enqueue(T(o?l:S.decode(l),n)),r=0}if(0===e||e>t){u.enqueue(b);break}}}})}(Number.MAX_SAFE_INTEGER,t.socket.binaryType),r=n.readable.pipeThrough(i).getReader(),e=I();e.readable.pipeTo(n.writable),t.U=e.writable.getWriter();!function n(){r.read().then((function(i){var r=i.done,e=i.value;r||(t.onPacket(e),n())})).catch((function(t){}))}();var o={type:"open"};t.query.sid&&(o.data='{"sid":"'.concat(t.query.sid,'"}')),t.U.write(o).then((function(){return t.onOpen()}))}))}))},r.write=function(t){var n=this;this.writable=!1;for(var i=function(){var i=t[r],e=r===t.length-1;n.U.write(i).then((function(){e&&_((function(){n.writable=!0,n.emitReserved("drain")}),n.setTimeoutFn)}))},r=0;r<t.length;r++)i()},r.doClose=function(){var t;null===(t=this.C)||void 0===t||t.close()},i(n,[{key:"name",get:function(){return"webtransport"}}])}(H),ht={websocket:st,webtransport:ut,polling:nt},ft=/^(?:(?![^:@\/?#]+:[^:@\/]*@)(http|https|ws|wss):\/\/)?((?:(([^:@\/?#]*)(?::([^:@\/?#]*))?)?@)?((?:[a-f0-9]{0,4}:){2,7}[a-f0-9]{0,4}|[^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/,ct=["source","protocol","authority","userInfo","user","password","host","port","relative","path","directory","file","query","anchor"];function at(t){if(t.length>8e3)throw"URI too long";var n=t,i=t.indexOf("["),r=t.indexOf("]");-1!=i&&-1!=r&&(t=t.substring(0,i)+t.substring(i,r).replace(/:/g,";")+t.substring(r,t.length));for(var e,o,s=ft.exec(t||""),u={},h=14;h--;)u[ct[h]]=s[h]||"";return-1!=i&&-1!=r&&(u.source=n,u.host=u.host.substring(1,u.host.length-1).replace(/;/g,":"),u.authority=u.authority.replace("[","").replace("]","").replace(/;/g,":"),u.ipv6uri=!0),u.pathNames=function(t,n){var i=/\/{2,9}/g,r=n.replace(i,"/").split("/");"/"!=n.slice(0,1)&&0!==n.length||r.splice(0,1);"/"==n.slice(-1)&&r.splice(r.length-1,1);return r}(0,u.path),u.queryKey=(e=u.query,o={},e.replace(/(?:^|&)([^&=]*)=?([^&]*)/g,(function(t,n,i){n&&(o[n]=i)})),o),u}var vt="function"==typeof addEventListener&&"function"==typeof removeEventListener,lt=[];vt&&addEventListener("offline",(function(){lt.forEach((function(t){return t()}))}),!1);var pt=function(t){function n(n){var i,r,o,s=arguments.length>1&&void 0!==arguments[1]?arguments[1]:{};if((i=t.call(this)||this).binaryType="arraybuffer",i.writeBuffer=[],i.M=0,i.I=[],i.R=-1,i.L=-1,i._=-1,i.D=1/0,n&&"object"===a(n)&&(s=n,n=null),n){var u=at(n);s.hostname=u.host,s.secure="https"===u.protocol||"wss"===u.protocol,s.port=u.port,u.query&&(s.query=u.query)}else s.host&&(s.hostname=at(s.host).host);if(V(i,s),i.secure=null!=s.secure?s.secure:"undefined"!=typeof location&&"https:"===location.protocol,s.hostname&&!s.port&&(s.port=i.secure?"443":"80"),i.hostname=s.hostname||("undefined"!=typeof location?location.hostname:"localhost"),i.port=s.port||("undefined"!=typeof location&&location.port?location.port:i.secure?"443":"80"),s.transportImplementations&&s.transports)throw new Error("specifying both 'transportImplementations' and 'transports' options is not supported");return s.transportImplementations||(null===(r=s.transports)||void 0===r?void 0:r.length)&&"function"==typeof s.transports[0]?(i.transports=[],i.P=Object.create(null),(null!==(o=s.transportImplementations)&&void 0!==o?o:s.transports).forEach((function(t){var n=t.prototype.name;i.transports.push(n),i.P[n]=t}))):(i.transports=s.transports?f(s.transports):["polling","websocket","webtransport"],i.P=ht),i.opts=e({path:"/engine.io",agent:!1,withCredentials:!1,upgrade:!0,timestampParam:"t",rememberUpgrade:!1,addTrailingSlash:!0,rejectUnauthorized:!0,perMessageDeflate:{threshold:1024},transportOptions:{},closeOnBeforeunload:!1},s),i.opts.path=i.opts.path.replace(/\/$/,"")+(i.opts.addTrailingSlash?"/":""),"string"==typeof i.opts.query&&(i.opts.query=function(t){for(var n={},i=t.split("&"),r=0,e=i.length;r<e;r++){var o=i[r].split("=");n[decodeURIComponent(o[0])]=decodeURIComponent(o[1])}return n}(i.opts.query)),vt&&(i.opts.closeOnBeforeunload&&(i.$=function(){i.transport&&(i.transport.removeAllListeners(),i.transport.close())},addEventListener("beforeunload",i.$,!1)),"localhost"!==i.hostname&&(i.F=function(){i.V("transport close",{description:"network connection lost"})},lt.push(i.F))),i.opts.withCredentials&&(i.q=void 0),i.X(),i}s(n,t);var i=n.prototype;return i.createTransport=function(t){var n=e({},this.opts.query);n.EIO=4,n.transport=t,this.id&&(n.sid=this.id);var i=e({},this.opts,{query:n,socket:this,hostname:this.hostname,secure:this.secure,port:this.port},this.opts.transportOptions[t]);return new this.P[t](i)},i.X=function(){var t=this;if(0!==this.transports.length){var i=this.opts.rememberUpgrade&&n.priorWebsocketSuccess&&-1!==this.transports.indexOf("websocket")?"websocket":this.transports[0];this.readyState="opening";var r=this.createTransport(i);r.open(),this.setTransport(r)}else this.setTimeoutFn((function(){t.emitReserved("error","No transports available")}),0)},i.setTransport=function(t){var n=this;this.transport&&this.transport.removeAllListeners(),this.transport=t,t.on("drain",this.H.bind(this)).on("packet",this.J.bind(this)).on("error",this.B.bind(this)).on("close",(function(t){return n.V("transport close",t)}))},i.K=function(t){var i=this,r=this.createTransport(t),e=!1;n.priorWebsocketSuccess=!1;var o=function(){e||(r.send([{type:"ping",data:"probe"}]),r.once("packet",(function(t){if(!e)if("pong"===t.type&&"probe"===t.data){if(i.upgrading=!0,i.emitReserved("upgrading",r),!r)return;n.priorWebsocketSuccess="websocket"===r.name,i.transport.pause((function(){e||"closed"!==i.readyState&&(a(),i.setTransport(r),r.send([{type:"upgrade"}]),i.emitReserved("upgrade",r),r=null,i.upgrading=!1,i.flush())}))}else{var o=new Error("probe error");o.transport=r.name,i.emitReserved("upgradeError",o)}})))};function s(){e||(e=!0,a(),r.close(),r=null)}var u=function(t){var n=new Error("probe error: "+t);n.transport=r.name,s(),i.emitReserved("upgradeError",n)};function h(){u("transport closed")}function f(){u("socket closed")}function c(t){r&&t.name!==r.name&&s()}var a=function(){r.removeListener("open",o),r.removeListener("error",u),r.removeListener("close",h),i.off("close",f),i.off("upgrading",c)};r.once("open",o),r.once("error",u),r.once("close",h),this.once("close",f),this.once("upgrading",c),-1!==this.I.indexOf("webtransport")&&"webtransport"!==t?this.setTimeoutFn((function(){e||r.open()}),200):r.open()},i.onOpen=function(){if(this.readyState="open",n.priorWebsocketSuccess="websocket"===this.transport.name,this.emitReserved("open"),this.flush(),"open"===this.readyState&&this.opts.upgrade)for(var t=0;t<this.I.length;t++)this.K(this.I[t])},i.J=function(t){if("opening"===this.readyState||"open"===this.readyState||"closing"===this.readyState)switch(this.emitReserved("packet",t),this.emitReserved("heartbeat"),t.type){case"open":this.onHandshake(JSON.parse(t.data));break;case"ping":this.Y("pong"),this.emitReserved("ping"),this.emitReserved("pong"),this.G();break;case"error":var n=new Error("server error");n.code=t.data,this.B(n);break;case"message":this.emitReserved("data",t.data),this.emitReserved("message",t.data)}},i.onHandshake=function(t){this.emitReserved("handshake",t),this.id=t.sid,this.transport.query.sid=t.sid,this.I=this.W(t.upgrades),this.R=t.pingInterval,this.L=t.pingTimeout,this._=t.maxPayload,this.onOpen(),"closed"!==this.readyState&&this.G()},i.G=function(){var t=this;this.clearTimeoutFn(this.Z);var n=this.R+this.L;this.D=Date.now()+n,this.Z=this.setTimeoutFn((function(){t.V("ping timeout")}),n),this.opts.autoUnref&&this.Z.unref()},i.H=function(){this.writeBuffer.splice(0,this.M),this.M=0,0===this.writeBuffer.length?this.emitReserved("drain"):this.flush()},i.flush=function(){if("closed"!==this.readyState&&this.transport.writable&&!this.upgrading&&this.writeBuffer.length){var t=this.tt();this.transport.send(t),this.M=t.length,this.emitReserved("flush")}},i.tt=function(){if(!(this._&&"polling"===this.transport.name&&this.writeBuffer.length>1))return this.writeBuffer;for(var t,n=1,i=0;i<this.writeBuffer.length;i++){var r=this.writeBuffer[i].data;if(r&&(n+="string"==typeof(t=r)?function(t){for(var n=0,i=0,r=0,e=t.length;r<e;r++)(n=t.charCodeAt(r))<128?i+=1:n<2048?i+=2:n<55296||n>=57344?i+=3:(r++,i+=4);return i}(t):Math.ceil(1.33*(t.byteLength||t.size))),i>0&&n>this._)return this.writeBuffer.slice(0,i);n+=2}return this.writeBuffer},i.nt=function(){var t=this;if(!this.D)return!0;var n=Date.now()>this.D;return n&&(this.D=0,_((function(){t.V("ping timeout")}),this.setTimeoutFn)),n},i.write=function(t,n,i){return this.Y("message",t,n,i),this},i.send=function(t,n,i){return this.Y("message",t,n,i),this},i.Y=function(t,n,i,r){if("function"==typeof n&&(r=n,n=void 0),"function"==typeof i&&(r=i,i=null),"closing"!==this.readyState&&"closed"!==this.readyState){(i=i||{}).compress=!1!==i.compress;var e={type:t,data:n,options:i};this.emitReserved("packetCreate",e),this.writeBuffer.push(e),r&&this.once("flush",r),this.flush()}},i.close=function(){var t=this,n=function(){t.V("forced close"),t.transport.close()},i=function i(){t.off("upgrade",i),t.off("upgradeError",i),n()},r=function(){t.once("upgrade",i),t.once("upgradeError",i)};return"opening"!==this.readyState&&"open"!==this.readyState||(this.readyState="closing",this.writeBuffer.length?this.once("drain",(function(){t.upgrading?r():n()})):this.upgrading?r():n()),this},i.B=function(t){if(n.priorWebsocketSuccess=!1,this.opts.tryAllTransports&&this.transports.length>1&&"opening"===this.readyState)return this.transports.shift(),this.X();this.emitReserved("error",t),this.V("transport error",t)},i.V=function(t,n){if("opening"===this.readyState||"open"===this.readyState||"closing"===this.readyState){if(this.clearTimeoutFn(this.Z),this.transport.removeAllListeners("close"),this.transport.close(),this.transport.removeAllListeners(),vt&&(this.$&&removeEventListener("beforeunload",this.$,!1),this.F)){var i=lt.indexOf(this.F);-1!==i&&lt.splice(i,1)}this.readyState="closed",this.id=null,this.emitReserved("close",t,n),this.writeBuffer=[],this.M=0}},i.W=function(t){for(var n=[],i=0;i<t.length;i++)~this.transports.indexOf(t[i])&&n.push(t[i]);return n},n}(L);pt.protocol=4,pt.protocol;var dt="function"==typeof ArrayBuffer,yt=function(t){return"function"==typeof ArrayBuffer.isView?ArrayBuffer.isView(t):t.buffer instanceof ArrayBuffer},bt=Object.prototype.toString,wt="function"==typeof Blob||"undefined"!=typeof Blob&&"[object BlobConstructor]"===bt.call(Blob),gt="function"==typeof File||"undefined"!=typeof File&&"[object FileConstructor]"===bt.call(File);function mt(t){return dt&&(t instanceof ArrayBuffer||yt(t))||wt&&t instanceof Blob||gt&&t instanceof File}function kt(t,n){if(!t||"object"!==a(t))return!1;if(Array.isArray(t)){for(var i=0,r=t.length;i<r;i++)if(kt(t[i]))return!0;return!1}if(mt(t))return!0;if(t.toJSON&&"function"==typeof t.toJSON&&1===arguments.length)return kt(t.toJSON(),!0);for(var e in t)if(Object.prototype.hasOwnProperty.call(t,e)&&kt(t[e]))return!0;return!1}function At(t){var n=[],i=t.data,r=t;return r.data=Et(i,n),r.attachments=n.length,{packet:r,buffers:n}}function Et(t,n,i){if(!t)return t;if(mt(t)){var r={_placeholder:!0,num:n.length};return n.push(t),r}if(Array.isArray(t)){for(var e=new Array(t.length),o=0;o<t.length;o++)e[o]=Et(t[o],n);return e}if("object"===a(t)&&!(t instanceof Date)){if(t.toJSON&&"function"==typeof t.toJSON&&!i)return Et(t.toJSON(),n,!0);var s={};for(var u in t)Object.prototype.hasOwnProperty.call(t,u)&&(s[u]=Et(t[u],n));return s}return t}function jt(t,n){return t.data=Ot(t.data,n),delete t.attachments,t}function Ot(t,n){if(!t)return t;if(t&&!0===t._placeholder){if("number"==typeof t.num&&t.num>=0&&t.num<n.length)return n[t.num];throw new Error("illegal attachments")}if(Array.isArray(t))for(var i=0;i<t.length;i++)t[i]=Ot(t[i],n);else if("object"===a(t))for(var r in t)Object.prototype.hasOwnProperty.call(t,r)&&(t[r]=Ot(t[r],n));return t}var Bt,St=["connect","connect_error","disconnect","disconnecting","newListener","removeListener"];!function(t){t[t.CONNECT=0]="CONNECT",t[t.DISCONNECT=1]="DISCONNECT",t[t.EVENT=2]="EVENT",t[t.ACK=3]="ACK",t[t.CONNECT_ERROR=4]="CONNECT_ERROR",t[t.BINARY_EVENT=5]="BINARY_EVENT",t[t.BINARY_ACK=6]="BINARY_ACK"}(Bt||(Bt={}));var Nt=function(){function t(t){this.replacer=t}var n=t.prototype;return n.encode=function(t){return t.type!==Bt.EVENT&&t.type!==Bt.ACK||!kt(t)?[this.encodeAsString(t)]:this.encodeAsBinary({type:t.type===Bt.EVENT?Bt.BINARY_EVENT:Bt.BINARY_ACK,nsp:t.nsp,data:t.data,id:t.id})},n.encodeAsString=function(t){var n=""+t.type;return t.type!==Bt.BINARY_EVENT&&t.type!==Bt.BINARY_ACK||(n+=t.attachments+"-"),t.nsp&&"/"!==t.nsp&&(n+=t.nsp+","),null!=t.id&&(n+=t.id),null!=t.data&&(n+=JSON.stringify(t.data,this.replacer)),n},n.encodeAsBinary=function(t){var n=At(t),i=this.encodeAsString(n.packet),r=n.buffers;return r.unshift(i),r},t}(),Tt=function(t){function n(n){var i;return(i=t.call(this)||this).opts=e({reviver:void 0,maxAttachments:10},"function"==typeof n?{reviver:n}:n),i}s(n,t);var i=n.prototype;return i.add=function(n){var i;if("string"==typeof n){if(this.reconstructor)throw new Error("got plaintext data when reconstructing a packet");var r=(i=this.decodeString(n)).type===Bt.BINARY_EVENT;r||i.type===Bt.BINARY_ACK?(i.type=r?Bt.EVENT:Bt.ACK,this.reconstructor=new Ct(i)):t.prototype.emitReserved.call(this,"decoded",i)}else{if(!mt(n)&&!n.base64)throw new Error("Unknown type: "+n);if(!this.reconstructor)throw new Error("got binary data when not reconstructing a packet");(i=this.reconstructor.takeBinaryData(n))&&(this.reconstructor=null,t.prototype.emitReserved.call(this,"decoded",i))}},i.decodeString=function(t){var i=0,r={type:Number(t.charAt(0))};if(void 0===Bt[r.type])throw new Error("unknown packet type "+r.type);if(r.type===Bt.BINARY_EVENT||r.type===Bt.BINARY_ACK){for(var e=i+1;"-"!==t.charAt(++i)&&i!=t.length;);var o=t.substring(e,i);if(o!=Number(o)||"-"!==t.charAt(i))throw new Error("Illegal attachments");var s=Number(o);if(!Ut(s)||s<1)throw new Error("Illegal attachments");if(s>this.opts.maxAttachments)throw new Error("too many attachments");r.attachments=s}if("/"===t.charAt(i+1)){for(var u=i+1;++i;){if(","===t.charAt(i))break;if(i===t.length)break}r.nsp=t.substring(u,i)}else r.nsp="/";var h=t.charAt(i+1);if(""!==h&&Number(h)==h){for(var f=i+1;++i;){var c=t.charAt(i);if(null==c||Number(c)!=c){--i;break}if(i===t.length)break}r.id=Number(t.substring(f,i+1))}if(t.charAt(++i)){var a=this.tryParse(t.substr(i));if(!n.isPayloadValid(r.type,a))throw new Error("invalid payload");r.data=a}return r},i.tryParse=function(t){try{return JSON.parse(t,this.opts.reviver)}catch(t){return!1}},n.isPayloadValid=function(t,n){switch(t){case Bt.CONNECT:return Mt(n);case Bt.DISCONNECT:return void 0===n;case Bt.CONNECT_ERROR:return"string"==typeof n||Mt(n);case Bt.EVENT:case Bt.BINARY_EVENT:return Array.isArray(n)&&("number"==typeof n[0]||"string"==typeof n[0]&&-1===St.indexOf(n[0]));case Bt.ACK:case Bt.BINARY_ACK:return Array.isArray(n)}},i.destroy=function(){this.reconstructor&&(this.reconstructor.finishedReconstruction(),this.reconstructor=null)},n}(L),Ct=function(){function t(t){this.packet=t,this.buffers=[],this.reconPack=t}var n=t.prototype;return n.takeBinaryData=function(t){if(this.buffers.push(t),this.buffers.length===this.reconPack.attachments){var n=jt(this.reconPack,this.buffers);return this.finishedReconstruction(),n}return null},n.finishedReconstruction=function(){this.reconPack=null,this.buffers=[]},t}();var Ut=Number.isInteger||function(t){return"number"==typeof t&&isFinite(t)&&Math.floor(t)===t};function Mt(t){return"[object Object]"===Object.prototype.toString.call(t)}var It=Object.freeze({__proto__:null,protocol:5,get PacketType(){return Bt},Encoder:Nt,Decoder:Tt,isPacketValid:function(t){return"string"==typeof t.nsp&&(void 0===(n=t.id)||Ut(n))&&function(t,n){switch(t){case Bt.CONNECT:return void 0===n||Mt(n);case Bt.DISCONNECT:return void 0===n;case Bt.EVENT:return Array.isArray(n)&&("number"==typeof n[0]||"string"==typeof n[0]&&-1===St.indexOf(n[0]));case Bt.ACK:return Array.isArray(n);case Bt.CONNECT_ERROR:return"string"==typeof n||Mt(n);default:return!1}}(t.type,t.data);var n}});function xt(t,n,i){return t.on(n,i),function(){t.off(n,i)}}var Rt=Object.freeze({connect:1,connect_error:1,disconnect:1,disconnecting:1,newListener:1,removeListener:1}),Lt=function(t){function n(n,i,r){var o;return(o=t.call(this)||this).connected=!1,o.recovered=!1,o.receiveBuffer=[],o.sendBuffer=[],o.it=[],o.rt=0,o.ids=0,o.acks={},o.flags={},o.io=n,o.nsp=i,r&&r.auth&&(o.auth=r.auth),o.l=e({},r),o.io.et&&o.open(),o}s(n,t);var o=n.prototype;return o.subEvents=function(){if(!this.subs){var t=this.io;this.subs=[xt(t,"open",this.onopen.bind(this)),xt(t,"packet",this.onpacket.bind(this)),xt(t,"error",this.onerror.bind(this)),xt(t,"close",this.onclose.bind(this))]}},o.connect=function(){return this.connected||(this.subEvents(),this.io.ot||this.io.open(),"open"===this.io.st&&this.onopen()),this},o.open=function(){return this.connect()},o.send=function(){for(var t=arguments.length,n=new Array(t),i=0;i<t;i++)n[i]=arguments[i];return n.unshift("message"),this.emit.apply(this,n),this},o.emit=function(t){var n,i,r;if(Rt.hasOwnProperty(t))throw new Error('"'+t.toString()+'" is a reserved event name');for(var e=arguments.length,o=new Array(e>1?e-1:0),s=1;s<e;s++)o[s-1]=arguments[s];if(o.unshift(t),this.l.retries&&!this.flags.fromQueue&&!this.flags.volatile)return this.ut(o),this;var u={type:Bt.EVENT,data:o,options:{}};if(u.options.compress=!1!==this.flags.compress,"function"==typeof o[o.length-1]){var h=this.ids++,f=o.pop();this.ht(h,f),u.id=h}var c=null===(i=null===(n=this.io.engine)||void 0===n?void 0:n.transport)||void 0===i?void 0:i.writable,a=this.connected&&!(null===(r=this.io.engine)||void 0===r?void 0:r.nt());return this.flags.volatile&&!c||(a?(this.notifyOutgoingListeners(u),this.packet(u)):this.sendBuffer.push(u)),this.flags={},this},o.ht=function(t,n){var i,r=this,e=null!==(i=this.flags.timeout)&&void 0!==i?i:this.l.ackTimeout;if(void 0!==e){var o=this.io.setTimeoutFn((function(){delete r.acks[t];for(var i=0;i<r.sendBuffer.length;i++)r.sendBuffer[i].id===t&&r.sendBuffer.splice(i,1);n.call(r,new Error("operation has timed out"))}),e),s=function(){r.io.clearTimeoutFn(o);for(var t=arguments.length,i=new Array(t),e=0;e<t;e++)i[e]=arguments[e];n.apply(r,i)};s.withError=!0,this.acks[t]=s}else this.acks[t]=n},o.emitWithAck=function(t){for(var n=this,i=arguments.length,r=new Array(i>1?i-1:0),e=1;e<i;e++)r[e-1]=arguments[e];return new Promise((function(i,e){var o=function(t,n){return t?e(t):i(n)};o.withError=!0,r.push(o),n.emit.apply(n,[t].concat(r))}))},o.ut=function(t){var n,i=this;"function"==typeof t[t.length-1]&&(n=t.pop());var r={id:this.rt++,tryCount:0,pending:!1,args:t,flags:e({fromQueue:!0},this.flags)};t.push((function(t){if(i.it[0],null!==t)r.tryCount>i.l.retries&&(i.it.shift(),n&&n(t));else if(i.it.shift(),n){for(var e=arguments.length,o=new Array(e>1?e-1:0),s=1;s<e;s++)o[s-1]=arguments[s];n.apply(void 0,[null].concat(o))}return r.pending=!1,i.ft()})),this.it.push(r),this.ft()},o.ft=function(){var t=arguments.length>0&&void 0!==arguments[0]&&arguments[0];if(this.connected&&0!==this.it.length){var n=this.it[0];n.pending&&!t||(n.pending=!0,n.tryCount++,this.flags=n.flags,this.emit.apply(this,n.args))}},o.packet=function(t){t.nsp=this.nsp,this.io.ct(t)},o.onopen=function(){var t=this;"function"==typeof this.auth?this.auth((function(n){t.vt(n)})):this.vt(this.auth)},o.vt=function(t){this.packet({type:Bt.CONNECT,data:this.lt?e({pid:this.lt,offset:this.dt},t):t})},o.onerror=function(t){this.connected||this.emitReserved("connect_error",t)},o.onclose=function(t,n){this.connected=!1,delete this.id,this.emitReserved("disconnect",t,n),this.yt()},o.yt=function(){var t=this;Object.keys(this.acks).forEach((function(n){if(!t.sendBuffer.some((function(t){return String(t.id)===n}))){var i=t.acks[n];delete t.acks[n],i.withError&&i.call(t,new Error("socket has been disconnected"))}}))},o.onpacket=function(t){if(t.nsp===this.nsp)switch(t.type){case Bt.CONNECT:t.data&&t.data.sid?this.onconnect(t.data.sid,t.data.pid):this.emitReserved("connect_error",new Error("It seems you are trying to reach a Socket.IO server in v2.x with a v3.x client, but they are not compatible (more information here: https://socket.io/docs/v3/migrating-from-2-x-to-3-0/)"));break;case Bt.EVENT:case Bt.BINARY_EVENT:this.onevent(t);break;case Bt.ACK:case Bt.BINARY_ACK:this.onack(t);break;case Bt.DISCONNECT:this.ondisconnect();break;case Bt.CONNECT_ERROR:this.destroy();var n=new Error(t.data.message);n.data=t.data.data,this.emitReserved("connect_error",n)}},o.onevent=function(t){var n=t.data||[];null!=t.id&&n.push(this.ack(t.id)),this.connected?this.emitEvent(n):this.receiveBuffer.push(Object.freeze(n))},o.emitEvent=function(n){if(this.bt&&this.bt.length){var i,e=r(this.bt.slice());try{for(e.s();!(i=e.n()).done;){i.value.apply(this,n)}}catch(t){e.e(t)}finally{e.f()}}t.prototype.emit.apply(this,n),this.lt&&n.length&&"string"==typeof n[n.length-1]&&(this.dt=n[n.length-1])},o.ack=function(t){var n=this,i=!1;return function(){if(!i){i=!0;for(var r=arguments.length,e=new Array(r),o=0;o<r;o++)e[o]=arguments[o];n.packet({type:Bt.ACK,id:t,data:e})}}},o.onack=function(t){var n=this.acks[t.id];"function"==typeof n&&(delete this.acks[t.id],n.withError&&t.data.unshift(null),n.apply(this,t.data))},o.onconnect=function(t,n){this.id=t,this.recovered=n&&this.lt===n,this.lt=n,this.connected=!0,this.emitBuffered(),this.ft(!0),this.emitReserved("connect")},o.emitBuffered=function(){var t=this;this.receiveBuffer.forEach((function(n){return t.emitEvent(n)})),this.receiveBuffer=[],this.sendBuffer.forEach((function(n){t.notifyOutgoingListeners(n),t.packet(n)})),this.sendBuffer=[]},o.ondisconnect=function(){this.destroy(),this.onclose("io server disconnect")},o.destroy=function(){this.subs&&(this.subs.forEach((function(t){return t()})),this.subs=void 0),this.io.wt(this)},o.disconnect=function(){return this.connected&&this.packet({type:Bt.DISCONNECT}),this.destroy(),this.connected&&this.onclose("io client disconnect"),this},o.close=function(){return this.disconnect()},o.compress=function(t){return this.flags.compress=t,this},o.timeout=function(t){return this.flags.timeout=t,this},o.onAny=function(t){return this.bt=this.bt||[],this.bt.push(t),this},o.prependAny=function(t){return this.bt=this.bt||[],this.bt.unshift(t),this},o.offAny=function(t){if(!this.bt)return this;if(t){for(var n=this.bt,i=0;i<n.length;i++)if(t===n[i])return n.splice(i,1),this}else this.bt=[];return this},o.listenersAny=function(){return this.bt||[]},o.onAnyOutgoing=function(t){return this.gt=this.gt||[],this.gt.push(t),this},o.prependAnyOutgoing=function(t){return this.gt=this.gt||[],this.gt.unshift(t),this},o.offAnyOutgoing=function(t){if(!this.gt)return this;if(t){for(var n=this.gt,i=0;i<n.length;i++)if(t===n[i])return n.splice(i,1),this}else this.gt=[];return this},o.listenersAnyOutgoing=function(){return this.gt||[]},o.notifyOutgoingListeners=function(t){if(this.gt&&this.gt.length){var n,i=r(this.gt.slice());try{for(i.s();!(n=i.n()).done;){n.value.apply(this,t.data)}}catch(t){i.e(t)}finally{i.f()}}},i(n,[{key:"disconnected",get:function(){return!this.connected}},{key:"active",get:function(){return!!this.subs}},{key:"volatile",get:function(){return this.flags.volatile=!0,this}}])}(L);function _t(t){t=t||{},this.ms=t.min||100,this.max=t.max||1e4,this.factor=t.factor||2,this.jitter=t.jitter>0&&t.jitter<=1?t.jitter:0,this.attempts=0}_t.prototype.duration=function(){var t=this.ms*Math.pow(this.factor,this.attempts++);if(this.jitter){var n=Math.random(),i=Math.floor(n*this.jitter*t);t=1&Math.floor(10*n)?t+i:t-i}return 0|Math.min(t,this.max)},_t.prototype.reset=function(){this.attempts=0},_t.prototype.setMin=function(t){this.ms=t},_t.prototype.setMax=function(t){this.max=t},_t.prototype.setJitter=function(t){this.jitter=t};var Dt=function(t){function n(n,i){var r,e;(r=t.call(this)||this).nsps={},r.subs=[],n&&"object"===a(n)&&(i=n,n=void 0),(i=i||{}).path=i.path||"/socket.io",r.opts=i,V(r,i),r.reconnection(!1!==i.reconnection),r.reconnectionAttempts(i.reconnectionAttempts||1/0),r.reconnectionDelay(i.reconnectionDelay||1e3),r.reconnectionDelayMax(i.reconnectionDelayMax||5e3),r.randomizationFactor(null!==(e=i.randomizationFactor)&&void 0!==e?e:.5),r.backoff=new _t({min:r.reconnectionDelay(),max:r.reconnectionDelayMax(),jitter:r.randomizationFactor()}),r.timeout(null==i.timeout?2e4:i.timeout),r.st="closed",r.uri=n;var o=i.parser||It;return r.encoder=new o.Encoder,r.decoder=new o.Decoder,r.et=!1!==i.autoConnect,r.et&&r.open(),r}s(n,t);var i=n.prototype;return i.reconnection=function(t){return arguments.length?(this.kt=!!t,t||(this.skipReconnect=!0),this):this.kt},i.reconnectionAttempts=function(t){return void 0===t?this.At:(this.At=t,this)},i.reconnectionDelay=function(t){var n;return void 0===t?this.Et:(this.Et=t,null===(n=this.backoff)||void 0===n||n.setMin(t),this)},i.randomizationFactor=function(t){var n;return void 0===t?this.jt:(this.jt=t,null===(n=this.backoff)||void 0===n||n.setJitter(t),this)},i.reconnectionDelayMax=function(t){var n;return void 0===t?this.Ot:(this.Ot=t,null===(n=this.backoff)||void 0===n||n.setMax(t),this)},i.timeout=function(t){return arguments.length?(this.Bt=t,this):this.Bt},i.maybeReconnectOnOpen=function(){!this.ot&&this.kt&&0===this.backoff.attempts&&this.reconnect()},i.open=function(t){var n=this;if(~this.st.indexOf("open"))return this;this.engine=new pt(this.uri,this.opts);var i=this.engine,r=this;this.st="opening",this.skipReconnect=!1;var e=xt(i,"open",(function(){r.onopen(),t&&t()})),o=function(i){n.cleanup(),n.st="closed",n.emitReserved("error",i),t?t(i):n.maybeReconnectOnOpen()},s=xt(i,"error",o);if(!1!==this.Bt){var u=this.Bt,h=this.setTimeoutFn((function(){e(),o(new Error("timeout")),i.close()}),u);this.opts.autoUnref&&h.unref(),this.subs.push((function(){n.clearTimeoutFn(h)}))}return this.subs.push(e),this.subs.push(s),this},i.connect=function(t){return this.open(t)},i.onopen=function(){this.cleanup(),this.st="open",this.emitReserved("open");var t=this.engine;this.subs.push(xt(t,"ping",this.onping.bind(this)),xt(t,"data",this.ondata.bind(this)),xt(t,"error",this.onerror.bind(this)),xt(t,"close",this.onclose.bind(this)),xt(this.decoder,"decoded",this.ondecoded.bind(this)))},i.onping=function(){this.emitReserved("ping")},i.ondata=function(t){try{this.decoder.add(t)}catch(t){this.onclose("parse error",t)}},i.ondecoded=function(t){var n=this;_((function(){n.emitReserved("packet",t)}),this.setTimeoutFn)},i.onerror=function(t){this.emitReserved("error",t)},i.socket=function(t,n){var i=this.nsps[t];return i?this.et&&!i.active&&i.connect():(i=new Lt(this,t,n),this.nsps[t]=i),i},i.wt=function(t){for(var n=0,i=Object.keys(this.nsps);n<i.length;n++){var r=i[n];if(this.nsps[r].active)return}this.St()},i.ct=function(t){for(var n=this.encoder.encode(t),i=0;i<n.length;i++)this.engine.write(n[i],t.options)},i.cleanup=function(){this.subs.forEach((function(t){return t()})),this.subs.length=0,this.decoder.destroy()},i.St=function(){this.skipReconnect=!0,this.ot=!1,this.onclose("forced close")},i.disconnect=function(){return this.St()},i.onclose=function(t,n){var i;this.cleanup(),null===(i=this.engine)||void 0===i||i.close(),this.backoff.reset(),this.st="closed",this.emitReserved("close",t,n),this.kt&&!this.skipReconnect&&this.reconnect()},i.reconnect=function(){var t=this;if(this.ot||this.skipReconnect)return this;var n=this;if(this.backoff.attempts>=this.At)this.backoff.reset(),this.emitReserved("reconnect_failed"),this.ot=!1;else{var i=this.backoff.duration();this.ot=!0;var r=this.setTimeoutFn((function(){n.skipReconnect||(t.emitReserved("reconnect_attempt",n.backoff.attempts),n.skipReconnect||n.open((function(i){i?(n.ot=!1,n.reconnect(),t.emitReserved("reconnect_error",i)):n.onreconnect()})))}),i);this.opts.autoUnref&&r.unref(),this.subs.push((function(){t.clearTimeoutFn(r)}))}},i.onreconnect=function(){var t=this.backoff.attempts;this.ot=!1,this.backoff.reset(),this.emitReserved("reconnect",t)},n}(L),Pt={};function $t(t,n){"object"===a(t)&&(n=t,t=void 0);var i,r=function(t){var n=arguments.length>1&&void 0!==arguments[1]?arguments[1]:"",i=arguments.length>2?arguments[2]:void 0,r=t;i=i||"undefined"!=typeof location&&location,null==t&&(t=i.protocol+"//"+i.host),"string"==typeof t&&("/"===t.charAt(0)&&(t="/"===t.charAt(1)?i.protocol+t:i.host+t),/^(https?|wss?):\/\//.test(t)||(t=void 0!==i?i.protocol+"//"+t:"https://"+t),r=at(t)),r.port||(/^(http|ws)$/.test(r.protocol)?r.port="80":/^(http|ws)s$/.test(r.protocol)&&(r.port="443")),r.path=r.path||"/";var e=-1!==r.host.indexOf(":")?"["+r.host+"]":r.host;return r.id=r.protocol+"://"+e+":"+r.port+n,r.href=r.protocol+"://"+e+(i&&i.port===r.port?"":":"+r.port),r}(t,(n=n||{}).path||"/socket.io"),e=r.source,o=r.id,s=r.path,u=Pt[o]&&s in Pt[o].nsps;return n.forceNew||n["force new connection"]||!1===n.multiplex||u?i=new Dt(e,n):(Pt[o]||(Pt[o]=new Dt(e,n)),i=Pt[o]),r.query&&!n.query&&(n.query=r.queryKey),i.socket(r.path,n)}return e($t,{Manager:Dt,Socket:Lt,io:$t,connect:$t}),$t}));
+
+
+</script>
+<script id="stranger-app">
+(()=>{
+'use strict';
+// No camera is requested on page load. Permission follows an explicit user action.
+const $=id=>document.getElementById(id);
+const defaults={theme:'light',mirror:true,blur:true,strict:false,autoNext:false,sounds:false,volume:100,camera:'',mic:'',mode:'video',interests:[]};
+function loadPreferences() {
+  try {
+    const saved=JSON.parse(localStorage.getItem('stranger.preferences')||'{}');
+    const p={...defaults};
+    for (const key of ['mirror','blur','strict','autoNext','sounds']) if (typeof saved[key]==='boolean') p[key]=saved[key];
+    if (['light','dark','system'].includes(saved.theme)) p.theme=saved.theme;
+    if (['video','text'].includes(saved.mode)) p.mode=saved.mode;
+    if (Number.isFinite(saved.volume)) p.volume=Math.max(0,Math.min(100,saved.volume));
+    for (const key of ['camera','mic']) if (typeof saved[key]==='string') p[key]=saved[key];
+    if (Array.isArray(saved.interests)) p.interests=[...new Set(saved.interests.filter(x=>typeof x==='string').map(x=>x.trim().toLowerCase().slice(0,24)).filter(Boolean))].slice(0,6);
+    return p;
+  } catch { return {...defaults,interests:[]}; }
+}
+const prefs=loadPreferences();
+const s={standalone:true,checking:true,socket:null,config:{name:'stranger.',rulesVersion:'2026-10-12',production:false,relayOnly:false,retentionDays:30,moderatorContact:'',standalone:true},online:false,accepted:false,state:'idle',busy:false,banned:false,stream:null,peer:null,remoteStream:null,room:null,lastRoom:null,reportExpires:0,remoteCamera:true,remoteMic:true,videoConnected:false,revealed:false,speaker:true,mic:true,camera:true,operation:0,wantsMatch:false,rtc:null,rtcAt:0,started:0,searchStarted:0,intent:'start',reportRoom:null};
+let toastTimeout,typingTimeout,autoNextTimeout,videoTimeout,lastTyping=0,audioContext=null;
+const systemTheme=window.matchMedia('(prefers-color-scheme: dark)');
+const openers=['What is a song you have had on repeat lately?','What is one thing you are looking forward to?','What is a hobby you would love to try?','What is the best thing you have watched recently?','What is a tiny thing that always makes your day?','If you could master one skill overnight, what would it be?'];
+let openerIndex=Math.floor(Math.random()*openers.length);
+
+function savePreferences() { try { localStorage.setItem('stranger.preferences',JSON.stringify(prefs)); } catch { /* Storage can be disabled in private browsers. */ } }
+function applyTheme() { document.documentElement.dataset.theme=prefs.theme==='system' ? (systemTheme.matches?'dark':'light') : prefs.theme; }
+systemTheme.addEventListener('change',applyTheme);
+applyTheme();
+function toast(message) { clearTimeout(toastTimeout); $('toast').textContent=message; $('toast').hidden=false; toastTimeout=setTimeout(()=>$('toast').hidden=true,6500); }
+function notice(message='') { $('connectionNotice').textContent=message; $('connectionNotice').hidden=!message; }
+function openDialog(id) { const dialog=$(id); if (!dialog.open) dialog.showModal(); }
+function request(event,payload={}) {
+  return new Promise((resolve,reject)=>{
+    if (!s.socket?.connected) return reject(new Error('The server connection is unavailable. Please wait for it to reconnect.'));
+    s.socket.timeout(8000).emit(event,payload,(error,response)=>{
+      if (error) reject(new Error('The server did not respond. Please try again.'));
+      else if (!response?.ok) reject(new Error(response?.error||'This action could not be completed.'));
+      else resolve(response);
+    });
+  });
+}
+function fire(event,payload) { if (s.socket?.connected) s.socket.emit(event,payload,()=>{}); }
+function clearAutoNext() { clearTimeout(autoNextTimeout); autoNextTimeout=null; }
+function hasTrack(kind) { return Boolean(s.stream?.getTracks().some(t=>t.kind===kind && t.readyState==='live')); }
+function mediaState() { if (s.room) fire('media:state',{roomId:s.room.roomId,camera:s.camera&&hasTrack('video'),mic:s.mic&&hasTrack('audio')}); }
+
+function render() {
+  const active=s.state!=='idle', paired=Boolean(s.room);
+  const video=prefs.mode==='video';
+  document.body.classList.toggle('text-chat',!video);
+  $('videoMode').setAttribute('aria-pressed',String(video)); $('textMode').setAttribute('aria-pressed',String(!video));
+  $('videoMode').disabled=$('textMode').disabled=active||s.busy;
+  $('startButton').disabled=s.checking||s.banned||s.busy||s.state==='searching'||(!s.online&&!s.standalone);
+  $('startLabel').textContent=s.busy ? 'Getting ready…' : s.state==='searching' ? 'Finding someone…' : paired ? 'Next person' : 'Start a conversation';
+  $('startIcon').setAttribute('href',paired?'#stranger-icon-next':'#stranger-icon-arrow-right');
+  $('endButton').disabled=!active&&!s.stream&&!s.busy&&!s.wantsMatch;
+  $('micButton').disabled=!hasTrack('audio'); $('cameraButton').disabled=!hasTrack('video');
+  $('micButton').setAttribute('aria-pressed',String(s.mic&&hasTrack('audio')));
+  $('cameraButton').setAttribute('aria-pressed',String(s.camera&&hasTrack('video')));
+  $('micButton').setAttribute('aria-label',s.mic&&hasTrack('audio')?'Mute microphone':'Unmute microphone');
+  $('cameraButton').setAttribute('aria-label',s.camera&&hasTrack('video')?'Turn camera off':'Turn camera on');
+  $('micIcon').setAttribute('href',s.mic&&hasTrack('audio')?'#stranger-icon-mic':'#stranger-icon-mic-off');
+  $('cameraIcon').setAttribute('href',s.camera&&hasTrack('video')?'#stranger-icon-camera':'#stranger-icon-camera-off');
+  $('micLabel').textContent=s.mic&&hasTrack('audio')?'Mic on':'Mic off'; $('cameraLabel').textContent=s.camera&&hasTrack('video')?'Cam on':'Cam off';
+  $('speakerIcon').setAttribute('href',s.speaker?'#stranger-icon-volume':'#stranger-icon-volume-off'); $('speakerLabel').textContent=s.speaker?'Sound':'Muted';
+  $('speakerButton').setAttribute('aria-pressed',String(s.speaker)); $('speakerButton').setAttribute('aria-label',s.speaker?'Mute other participant':'Unmute other participant');
+  $('localVideo').classList.toggle('mirrored',prefs.mirror);
+  $('localPlaceholder').hidden=hasTrack('video')&&s.camera;
+  $('localHint').textContent=hasTrack('video')?'Camera paused':'Your camera is off';
+  $('previewButton').hidden=Boolean(s.stream); $('previewButton').disabled=s.checking||s.busy||s.banned;
+  $('localMicStatus').textContent=hasTrack('audio')?(s.mic?'MIC ON':'MUTED'):'OFF';
+  $('remoteVideo').muted=!s.speaker; $('remoteVideo').volume=prefs.volume/100;
+  $('messageInput').disabled=$('sendButton').disabled=$('emojiButton').disabled=$('icebreakerButton').disabled=!paired;
+  $('messageInput').placeholder=paired?'Say something nice…':'Connect to start chatting…';
+  $('chatTimer').hidden=!paired;
+  $('interestInput').disabled=$('addInterest').disabled=active||s.busy;
+  document.querySelectorAll('[data-interest],.interest-tag button').forEach(button=>button.disabled=active||s.busy);
+  $('strictSetting').disabled=active||s.busy;
+  $('cameraSelect').disabled=$('micSelect').disabled=Boolean(s.stream)||active||s.busy;
+  const reportable=Boolean(s.lastRoom)&&s.reportExpires>Date.now()&&s.online;
+  $('reportButton').disabled=$('blockButton').disabled=!reportable;
+  $('stageDot').className='status-dot'+(paired?' live':s.state==='searching'?' searching':'');
+  if (s.state==='searching') {
+    $('stageStatus').textContent='Looking for a connection'; $('chatSubtitle').textContent='Finding your next conversation';
+    $('remoteTitle').textContent='A little serendipity takes a moment.';
+    $('remoteEyebrow').textContent='LOOKING FOR SOMEONE NEW';
+    const waited=Math.floor((Date.now()-s.searchStarted)/1000);
+    $('remoteHint').textContent=waited>15 ? 'Keep this window open. Someone else needs to be searching in the same mode.' : prefs.interests.length ? 'Looking for someone with a shared interest…' : 'Waiting for another person to join…';
+    $('matchHint').textContent=prefs.strict?'Shared interests only':waited>=(s.config?.fallbackSeconds||15)?'Search widened to anyone':'Matching interests first';
+  } else if (paired) {
+    $('stageStatus').textContent=!video?'Text chat connected':s.videoConnected?'You’re connected':'Connecting video…';
+    $('chatSubtitle').textContent=s.room.interests.length?'You both like '+s.room.interests.join(', '):'You’re connected. Say hello!';
+    $('remoteTitle').textContent=!video?'A good conversation needs no camera.':!s.remoteCamera?'Their camera is paused.':'Connecting your video…';
+    $('remoteEyebrow').textContent=!video?'JUST WORDS, REAL CONNECTION':'YOU FOUND SOMEONE';
+    $('remoteHint').textContent=!video?'Your camera and microphone are off.':!s.remoteCamera?'You can still talk and send messages.':'Text chat is ready while video connects.';
+    $('matchHint').textContent='End the chat to change interests';
+  } else {
+    $('stageStatus').textContent=s.banned?'Browser suspended':'Ready when you are';
+    $('remoteEyebrow').textContent='SOMEONE NEW, SOMETHING DIFFERENT';
+    $('remoteTitle').textContent=video?'The next good conversation could be one click away.':'A new conversation. No camera needed.';
+    $('remoteHint').textContent=s.banned?'Contact the site operator if you think this is a mistake.':video?'Pick your mode below. Show up as yourself.':'Start matching to meet someone in text-only mode.';
+    $('matchHint').textContent=prefs.strict?'Strict interests on':'Interests optional · max 6';
+  }
+  const remoteVisible=paired&&video&&s.remoteCamera&&Boolean(s.remoteStream?.getVideoTracks().length);
+  $('remotePlaceholder').hidden=remoteVisible;
+  $('remoteVideo').classList.toggle('blurred',remoteVisible&&prefs.blur&&!s.revealed);
+  $('revealOverlay').hidden=!(remoteVisible&&prefs.blur&&!s.revealed);
+  $('remoteMedia').hidden=!paired||!video||s.remoteMic; $('remoteMedia').textContent='Their mic is muted';
+  $('networkLabel').textContent=!video?'TEXT ONLY · DEVICES OFF':paired?(s.videoConnected?(s.config?.relayOnly?'LIVE · RELAY CONNECTION':'LIVE · DIRECT VIDEO POSSIBLE'):'CONNECTING · TEXT CHAT READY'):s.stream?'PREVIEW ONLY · NOT SHARING':'CAMERA OFF · NOT SHARING';
+  document.body.classList.toggle('preview-only',s.standalone&&Boolean(s.stream));
+  if(s.standalone){
+    $('onlineCount').textContent=s.checking?'Getting ready…':'Camera preview';
+    $('onlineCount').title='Local camera preview. No chat server is connected.';
+    $('onlineDot').className='status-dot'+(s.stream?' live':'');
+    $('devNotice').hidden=true;
+    $('stageStatus').textContent=s.stream?'Your preview · only you can see this':'Your camera, on your website';
+    $('chatSubtitle').textContent='Live chat is not connected';
+    $('remoteEyebrow').textContent='YOUR SPACE, YOUR CAMERA';
+    $('remoteTitle').textContent='Start with your camera. Show up as yourself.';
+    $('remoteHint').textContent='Your preview stays on your device. Nothing is recorded or sent to a chat partner.';
+    $('remotePlaceholder').hidden=Boolean(s.stream);
+    $('messageInput').placeholder='Live chat needs a connected server…';
+    $('startLabel').textContent=s.busy?'Getting ready…':s.stream?'Turn preview off':video?'Enable camera & mic':'Set up live chat';
+    $('startIcon').setAttribute('href',s.stream?'#stranger-icon-stop':video?'#stranger-icon-camera':'#stranger-icon-arrow-right');
+    const empty=$('chatEmpty');
+    if(empty){empty.querySelector('h3').textContent='Your camera, on your website.';empty.querySelector('p').textContent='Try your camera and its controls. Connecting to another person requires the chat server.';empty.querySelector('small').textContent='No video upload. No recording. Just your local preview.';}
+    $('relayInfo').textContent='Standalone HTML mode: your preview stays on this device. No matching, text messages, or reports are sent without a chat server.';
+  }
+}
+function renderInterests() {
+  $('interestTags').replaceChildren();
+  for (const interest of prefs.interests) {
+    const tag=document.createElement('span'); tag.className='interest-tag';
+    const label=document.createElement('span'); label.textContent=interest;
+    const remove=document.createElement('button'); remove.type='button'; remove.textContent='×'; remove.setAttribute('aria-label','Remove '+interest);
+    remove.addEventListener('click',()=>{ if (s.state!=='idle'||s.busy) return; prefs.interests=prefs.interests.filter(x=>x!==interest); savePreferences(); renderInterests(); });
+    tag.append(label,remove); $('interestTags').append(tag);
+  }
+  render();
+}
+function addInterest(value) {
+  if (s.state!=='idle'||s.busy) return;
+  const interest=value.trim().toLowerCase().slice(0,24);
+  if (!interest) return;
+  if (prefs.interests.includes(interest)) return toast('That interest is already on your list.');
+  if (prefs.interests.length>=6) return toast('You can add up to six interests.');
+  prefs.interests.push(interest); $('interestInput').value=''; savePreferences(); renderInterests();
+}
+function clearChat() { $('chatLog').replaceChildren(); $('typingIndicator').textContent=''; $('messageInput').value=''; $('emojiPicker').hidden=true; $('emojiButton').setAttribute('aria-expanded','false'); updateInput(); }
+function systemMessage(text) {
+  $('chatEmpty')?.remove();
+  const node=document.createElement('p'); node.className='system-message'; node.textContent=text; $('chatLog').append(node); scrollChat();
+}
+function appendMessage(message,mine) {
+  // textContent deliberately keeps HTML, links and scripts inert.
+  const wrapper=document.createElement('div'); wrapper.className='message'+(mine?' mine':'');
+  const label=document.createElement('span'); label.className='message-label'; label.textContent=mine?'YOU':'STRANGER';
+  const bubble=document.createElement('p'); bubble.className='message-bubble'; bubble.textContent=message.text;
+  const time=document.createElement('span'); time.className='message-time'; time.textContent=new Date(message.at).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  wrapper.append(label,bubble,time); $('chatLog').append(wrapper);
+  while ($('chatLog').children.length>250) $('chatLog').firstElementChild.remove();
+  scrollChat();
+}
+function scrollChat() { $('chatLog').scrollTop=$('chatLog').scrollHeight; }
+function updateInput() { $('characterCount').textContent=$('messageInput').value.length+' / 1000'; }
+
+async function ensureMedia(operation) {
+  if (hasTrack('audio')&&hasTrack('video')) return;
+  if (!window.isSecureContext || !navigator.mediaDevices?.getUserMedia) throw new Error('Camera access needs a secure page. Upload this file to an HTTPS website and allow camera/microphone permissions in your browser.');
+  const media=await navigator.mediaDevices.getUserMedia({
+    video:{width:{ideal:1280},height:{ideal:720},frameRate:{ideal:24,max:30},...(prefs.camera?{deviceId:{exact:prefs.camera}}:{})},
+    audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true,...(prefs.mic?{deviceId:{exact:prefs.mic}}:{})},
+  });
+  // A permission dialog can remain open after End or a disconnect. Do not retain a late stream.
+  if (s.operation!==operation) { media.getTracks().forEach(track=>track.stop()); throw new Error('Camera request cancelled.'); }
+  releaseMedia(); s.stream=media; s.mic=true; s.camera=true;
+  $('localVideo').muted=true; $('localVideo').srcObject=media; $('localVideo').play().catch(()=>{});
+  media.getTracks().forEach(track=>track.addEventListener('ended',()=>{
+    if (s.stream!==media) return;
+    if (track.kind==='video') s.camera=false; else s.mic=false;
+    mediaState(); render(); toast('A device was disconnected. End the chat, check Settings, and try again.');
+  }));
+  await listDevices(); render();
+}
+function releaseMedia() { s.stream?.getTracks().forEach(track=>track.stop()); s.stream=null; $('localVideo').srcObject=null; }
+function mediaError(error) {
+  const map={NotAllowedError:'Camera or microphone access was denied. Use your browser’s site permissions to allow it, or switch to Text.',NotFoundError:'No camera or microphone was found. Connect both, or choose Text mode.',NotReadableError:'The camera or microphone is busy. Close other apps using it and try again.',OverconstrainedError:'The selected device is no longer available. Choose Default in Settings.'};
+  return map[error.name]||error.message||'Could not start your camera. Try Text mode.';
+}
+async function listDevices() {
+  if (!navigator.mediaDevices?.enumerateDevices) return;
+  try {
+    const devices=await navigator.mediaDevices.enumerateDevices();
+    for (const [id,kind,key,label] of [['cameraSelect','videoinput','camera','camera'],['micSelect','audioinput','mic','microphone']]) {
+      const select=$(id); select.replaceChildren(new Option('Default '+label,''));
+      devices.filter(d=>d.kind===kind&&d.deviceId).forEach((d,i)=>select.add(new Option(d.label||`${label} ${i+1}`,d.deviceId)));
+      select.value=prefs[key]; if (!select.value && prefs[key]) { prefs[key]=''; savePreferences(); }
+    }
+  } catch { /* Device labels may remain hidden before browser permission. */ }
+}
+function closePeer() {
+  clearTimeout(videoTimeout);
+  if (s.peer) { s.peer.ontrack=null; s.peer.onicecandidate=null; s.peer.onconnectionstatechange=null; s.peer.close(); s.peer=null; }
+  s.remoteStream?.getTracks().forEach(track=>track.stop()); s.remoteStream=null;
+  $('remoteVideo').srcObject=null; $('playRemote').hidden=true;
+  s.videoConnected=false; s.remoteCamera=true; s.remoteMic=true; s.revealed=false;
+}
+function videoProblem() {
+  if (!s.room || s.room.mode!=='video' || s.videoConnected) return;
+  systemMessage('Video could not connect. Text chat still works. Try Next; across restrictive networks, the operator needs a working TURN relay.');
+  $('stageStatus').textContent='Video unavailable · text is ready';
+  toast('Video could not connect. You can still use text chat.');
+}
+function setupPeer(room) {
+  if (typeof RTCPeerConnection==='undefined') { videoProblem(); return; }
+  const peer=new RTCPeerConnection({iceServers:s.rtc.iceServers,iceTransportPolicy:s.rtc.iceTransportPolicy});
+  s.peer=peer; peer.pendingCandidates=[]; peer.signalChain=Promise.resolve();
+  for (const track of s.stream.getTracks()) peer.addTrack(track,s.stream);
+  peer.onicecandidate=event=>{
+    if (event.candidate && s.peer===peer) fire('rtc:signal',{roomId:room.roomId,candidate:event.candidate.toJSON()});
+  };
+  peer.ontrack=event=>{
+    if (s.peer!==peer) return;
+    if (event.streams[0]) s.remoteStream=event.streams[0];
+    else { s.remoteStream ||= new MediaStream(); s.remoteStream.addTrack(event.track); }
+    $('remoteVideo').srcObject=s.remoteStream;
+    $('remoteVideo').play().catch(()=>{ if (s.peer===peer) $('playRemote').hidden=false; });
+    render();
+  };
+  peer.onconnectionstatechange=()=>{
+    if (s.peer!==peer) return;
+    s.videoConnected=peer.connectionState==='connected';
+    if (s.videoConnected) clearTimeout(videoTimeout);
+    else if (peer.connectionState==='failed') { clearTimeout(videoTimeout); videoProblem(); }
+    else if (peer.connectionState==='disconnected') { clearTimeout(videoTimeout); videoTimeout=setTimeout(videoProblem,15000); }
+    render();
+  };
+  videoTimeout=setTimeout(videoProblem,25000);
+  if (room.initiator) (async()=>{
+    try {
+      const offer=await peer.createOffer();
+      if (s.peer!==peer) return;
+      await peer.setLocalDescription(offer);
+      if (s.peer===peer) await request('rtc:signal',{roomId:room.roomId,description:{type:peer.localDescription.type,sdp:peer.localDescription.sdp}});
+    } catch { if (s.peer===peer) videoProblem(); }
+  })();
+}
+function receiveSignal(packet) {
+  const peer=s.peer;
+  if (!peer || s.room?.roomId!==packet.roomId) return;
+  // Serialize signaling so trickled candidates cannot overtake remote descriptions.
+  peer.signalChain=peer.signalChain.then(async()=>{
+    if (s.peer!==peer) return;
+    if (packet.description) {
+      await peer.setRemoteDescription(packet.description);
+      if (s.peer!==peer) return;
+      for (const candidate of peer.pendingCandidates.splice(0)) await peer.addIceCandidate(candidate);
+      if (packet.description.type==='offer') {
+        const answer=await peer.createAnswer();
+        if (s.peer!==peer) return;
+        await peer.setLocalDescription(answer);
+        if (s.peer===peer) await request('rtc:signal',{roomId:packet.roomId,description:{type:peer.localDescription.type,sdp:peer.localDescription.sdp}});
+      }
+    } else if (packet.candidate) {
+      if (peer.remoteDescription) await peer.addIceCandidate(packet.candidate);
+      else if (peer.pendingCandidates.length<128) peer.pendingCandidates.push(packet.candidate);
+    }
+  }).catch(()=>{ if (s.peer===peer) videoProblem(); });
+}
+function unlockAudio() {
+  if (!prefs.sounds) return;
+  try { audioContext ||= new (window.AudioContext||window.webkitAudioContext)(); audioContext.resume().catch(()=>{}); } catch { /* Optional sound. */ }
+}
+function chime() {
+  if (!prefs.sounds||!audioContext||audioContext.state!=='running') return;
+  const oscillator=audioContext.createOscillator(), gain=audioContext.createGain();
+  oscillator.connect(gain); gain.connect(audioContext.destination);
+  oscillator.frequency.setValueAtTime(560,audioContext.currentTime);
+  oscillator.frequency.setValueAtTime(740,audioContext.currentTime+.1);
+  gain.gain.setValueAtTime(.04,audioContext.currentTime); gain.gain.exponentialRampToValueAtTime(.001,audioContext.currentTime+.25);
+  oscillator.start(); oscillator.stop(audioContext.currentTime+.26);
+}
+
+async function perform(intent) {
+  if (s.busy) return;
+  if(intent!=='preview'&&!s.online)return showInfo('upload');
+  clearAutoNext(); unlockAudio();
+  const operation=++s.operation; s.busy=true; notice(); render();
+  try {
+    if (s.room || s.state==='searching') {
+      s.wantsMatch=false; closePeer(); s.room=null; s.state='idle';
+      s.reportExpires=Date.now()+120000;
+      await request('queue:leave');
+    }
+    if (s.operation!==operation) return;
+    if (prefs.mode==='video') await ensureMedia(operation); else releaseMedia();
+    if (s.operation!==operation) return;
+    if (intent==='preview') { toast('This preview stays on your device. Nothing is sent to another person.'); return; }
+    if (prefs.strict&&!prefs.interests.length) throw new Error('Add an interest or turn off strict matching in Settings.');
+    if (prefs.mode==='video' && (!s.rtc || Date.now()-s.rtcAt>45*60000)) {
+      s.rtc=await request('rtc:config'); s.rtcAt=Date.now();
+    }
+    if (s.operation!==operation) return;
+    s.wantsMatch=true; s.state='searching'; s.searchStarted=Date.now(); render();
+    await request('queue:join',{mode:prefs.mode,interests:prefs.interests,strict:prefs.strict});
+  } catch (error) {
+    if (s.operation!==operation) return;
+    s.wantsMatch=false; fire('queue:leave',{}); closePeer(); releaseMedia(); s.room=null; s.state='idle';
+    const message=mediaError(error); notice(message); toast(message);
+  } finally { if (s.operation===operation) { s.busy=false; render(); } }
+}
+function begin(intent='start') {
+  if(s.banned)return toast('This browser is suspended.');
+  if(s.checking||s.busy)return;
+  if(s.standalone&&intent==='start'){
+    if(prefs.mode==='text')return showInfo('upload');
+    if(s.stream)return endSession();
+    intent='preview';
+  }
+  if(intent==='start'&&!s.online)return toast('The chat server is reconnecting. You can still use the camera preview.');
+  s.intent=intent;
+  if (s.accepted) return perform(intent);
+  $('consentMediaNote').textContent=prefs.mode==='text'?'Text-only mode does not use your camera or microphone. You can end a conversation at any time.':'Your browser will ask before using your camera and microphone. A preview stays on your device until you start matching.';
+  $('directWarning').hidden=intent==='preview'||prefs.mode==='text'||s.config.relayOnly;
+  $('consentError').textContent=''; openDialog('consentDialog');
+}
+async function endSession(message='You ended the conversation. Your camera and microphone are off.') {
+  const operation=++s.operation; s.wantsMatch=false; s.busy=false; clearAutoNext();
+  const wasActive=s.state!=='idle';
+  closePeer(); releaseMedia(); s.room=null; s.state='idle';
+  if (s.lastRoom) s.reportExpires=Date.now()+120000;
+  $('typingIndicator').textContent=''; $('chatSubtitle').textContent='Take your time. Start again when you’re ready.';
+  render();
+  if (wasActive) systemMessage(message);
+  if (s.socket?.connected) {
+    try { await request('queue:leave'); }
+    catch { if(s.operation===operation){s.socket.disconnect(); s.socket.connect(); toast('The server connection was reset to make sure the chat ended.');} }
+  }
+}
+function toggleMic() { if (!hasTrack('audio')) return; s.mic=!s.mic; s.stream.getAudioTracks().forEach(t=>t.enabled=s.mic); mediaState(); render(); }
+function toggleCamera() { if (!hasTrack('video')) return; s.camera=!s.camera; s.stream.getVideoTracks().forEach(t=>t.enabled=s.camera); mediaState(); render(); }
+
+async function boot() {
+  let timer;
+  const controller=new AbortController();
+  try {
+    if(!['http:','https:'].includes(location.protocol))throw new Error('Standalone file');
+    timer=setTimeout(()=>controller.abort(),3000);
+    const response=await fetch('/api/bootstrap',{credentials:'same-origin',cache:'no-store',signal:controller.signal});
+    if(!response.ok)throw new Error('Standalone hosting');
+    const config=await response.json();
+    if(config?.name!=='stranger.'||typeof config.rulesVersion!=='string'||typeof config.turnConfigured!=='boolean')throw new Error('No compatible chat server');
+    s.config=config;s.standalone=false;s.checking=false;s.banned=s.config.banned;
+    $('devNotice').hidden=s.config.production;
+    $('relayInfo').textContent=s.config.relayOnly?'Video uses a TURN relay. The operator and relay provider still see connection metadata.':'Local development: direct video may reveal your IP to your match. Public hosting forces relay-only video with configured TURN.';
+    if (s.banned) { notice('This browser is temporarily suspended. Contact the site operator if this seems incorrect.'); $('onlineCount').textContent='Suspended'; render(); return; }
+    if (typeof window.io!=='function') throw new Error('The real-time client could not load. Start the included server and reload.');
+    const socket=window.io({autoConnect:false,withCredentials:true,reconnection:true,reconnectionDelay:1000,reconnectionDelayMax:5000}); s.socket=socket;
+    socket.on('connect',()=>{s.online=true;s.accepted=false;notice();$('onlineDot').className='status-dot live';render();});
+    socket.on('connect_error',error=>{s.online=false;$('onlineCount').textContent='Offline';$('onlineDot').className='status-dot';notice(error.message||'Unable to reach the server.');render();});
+    socket.on('disconnect',()=>{
+      const wasActive=s.state!=='idle'; ++s.operation; s.online=false; s.accepted=false; s.busy=false; s.wantsMatch=false;
+      clearAutoNext(); closePeer(); releaseMedia(); s.room=null; s.state='idle'; s.reportExpires=0;
+      $('onlineDot').className='status-dot'; $('onlineCount').textContent='Reconnecting…'; $('chatSubtitle').textContent='Server disconnected';
+      if (wasActive) systemMessage('Connection lost. Your devices were turned off. You will not be rematched automatically.');
+      if (!s.banned) notice('Server connection lost. Reconnecting…'); render();
+    });
+    socket.on('stats',stats=>{$('onlineCount').textContent=Number(stats.online)+' online';$('onlineCount').title='Connected browser sessions, including yours. Not all are searching.';});
+    socket.on('queue:waiting',()=>{if (s.wantsMatch) {s.state='searching';render();}});
+    socket.on('match',room=>{
+      if (!s.wantsMatch) { fire('queue:leave',{}); return; }
+      closePeer(); s.room=room; s.lastRoom=room.roomId; s.reportExpires=Infinity; s.started=Date.now(); s.state='connected'; s.busy=false;
+      clearChat(); systemMessage(room.interests.length?'A little common ground: '+room.interests.join(', ')+'. Say hello!':'You’re connected with someone new. Keep it kind.');
+      render(); chime();
+      if (room.mode==='video') { try { setupPeer(room); mediaState(); } catch { videoProblem(); } }
+    });
+    socket.on('session:ended',packet=>{
+      if (s.room?.roomId!==packet.roomId) return;
+      closePeer(); s.room=null; s.state='idle'; s.reportExpires=Date.now()+120000; s.busy=false;
+      $('typingIndicator').textContent=''; $('chatSubtitle').textContent='The conversation has ended';
+      systemMessage(packet.reason==='disconnected'?'The other person disconnected.':packet.reason==='moderated'?'The conversation was ended by the moderator.':'The other person left. A fresh conversation is a click away.');
+      const continueSearch=s.wantsMatch&&prefs.autoNext&&packet.reason!=='self'&&packet.reason!=='moderated';
+      if (!continueSearch) { s.wantsMatch=false; releaseMedia(); }
+      render();
+      if (continueSearch) { systemMessage('Finding someone new in a moment. Press End to stop.'); autoNextTimeout=setTimeout(()=>{if (s.online&&s.wantsMatch) perform('start');},1500); }
+    });
+    socket.on('chat:message',message=>{if (s.room?.roomId===message.roomId) {appendMessage(message,false);$('typingIndicator').textContent='';}});
+    socket.on('chat:typing',packet=>{if (s.room?.roomId!==packet.roomId) return;clearTimeout(typingTimeout);$('typingIndicator').textContent=packet.typing?'typing…':'';typingTimeout=setTimeout(()=>$('typingIndicator').textContent='',2200);});
+    socket.on('rtc:signal',receiveSignal);
+    socket.on('media:state',packet=>{if (s.room?.roomId===packet.roomId) {s.remoteCamera=packet.camera;s.remoteMic=packet.mic;render();}});
+    socket.on('session:banned',()=>{s.banned=true;endSession('The moderator suspended this browser.');notice('This browser is temporarily suspended. Contact the site operator.');});
+    socket.connect();
+  } catch {
+    s.standalone=true;s.online=false;s.checking=false;s.banned=false;
+    s.config={name:'stranger.',rulesVersion:'2026-10-12',production:false,relayOnly:false,retentionDays:30,moderatorContact:'',standalone:true};
+    notice();render();
+  } finally {clearTimeout(timer);s.checking=false;render();}
+}
+
+function showInfo(kind) {
+  if(kind==='upload'){
+    showStandaloneInfo('Upload once. Open anywhere.',[
+      ['Upload this file','Name this file index.html and place it in the root of your website. All page styles, icons, and browser scripts are included. The page itself does not need Node.js or any installation. Use HTTPS so your browser can allow the camera and microphone.'],
+      ['What works immediately','Camera and microphone permission, local camera preview, pause/mute controls, full screen where supported, device selection, themes, and saved preferences. Your preview stays on your own device.'],
+      ['Connecting people','HTML alone cannot provide random matching or relay signaling between strangers. This page includes the chat client, but a compatible running chat server must provide the matching and signaling endpoints. It does not simulate people or send pretend messages.'],
+      ['Using the full project','The previous ZIP includes the Node.js matching server and moderator dashboard. Keep that project for the live chat backend. A developer can serve this HTML from the same HTTPS origin and route /api/* and /socket.io/* to that server, with WebSockets and cookies preserved. Public video also needs a working TURN relay.'],
+      ['Hosting details','If replacing public/index.html in the original server, first allow this file’s specific inline script/style hashes in the server Content-Security-Policy; the original strict policy otherwise blocks embedded assets. Do not simply disable the security policy. Alternatively keep the original public files for the full server version. Cross-origin server URLs are not supported by the existing cookie/origin protections.'],
+      ['Before opening to strangers','Use real moderation, appropriate age assurance, and operator policies. The age checkbox is only a declaration. This file does not include automatic video moderation.'],
+      ['Verification','Standalone behavior was checked using simulated device APIs. Real webcam capture, browser layout, and hosted media calls still need device testing.']
+    ]);return;
+  }
+  if(kind==='privacy'&&s.standalone){
+    showStandaloneInfo('Your preview stays with you.',[
+      ['Camera & microphone','These devices are requested only after you click a button and agree. Browser permission is separate. In this standalone mode, the stream is used only for your local preview; it is not uploaded, recorded, or sent to another person.'],
+      ['Turning things off','Mic and camera buttons pause their tracks. End, Turn preview off, or closing the page stops all tracks. Your microphone is not played back through the preview.'],
+      ['Saved preferences','Appearance, mirror/blur preferences, interest selections, and selected device IDs can be stored in this browser. No chat log or moderation report can be submitted without a connected chat server. Your web host may keep its own normal access logs.'],
+      ['Checking for live chat','On an HTTP(S) website, this page checks /api/bootstrap on its own origin for the compatible chat server. No third-party matching service is contacted. On a local file, it does not make this request.'],
+      ['If live chat is connected later','The full chat server has different processing, including relaying text, connection metadata, reports, and browser-cookie blocks. Review the connected site’s privacy notice before joining.']
+    ]);return;
+  }
+  if(kind==='help'&&s.standalone){
+    showStandaloneInfo('Start with your camera.',[
+      ['1. Upload or open','Upload index.html to an HTTPS web host. You can also try opening the file locally, although device permission depends on your browser.'],
+      ['2. Give permission','Click Enable camera & mic, read and accept the notice, and allow access when your browser asks. No permission is requested just by loading the page.'],
+      ['3. Try the controls','Use Mic and Camera to pause each track. Use Settings to change appearance or mirror your preview. Click End before selecting a different camera or microphone.'],
+      ['4. Stop anytime','Click End or Turn preview off to fully release the devices. If you deny access, open the browser’s site permissions to change it.'],
+      ['Why chat is unavailable','No live server is connected yet. Use Website setup for the distinction between uploading the page and running real random chat.']
+    ]);return;
+  }
+  const days=s.config?.retentionDays||30;
+  const content={
+    rules:{title:'A good place to meet.',sections:[['Adults only','You must be at least 18. The checkbox is a declaration, not verified age. If someone appears underage, leave and report.'],['Keep it respectful','No nudity, sexual behavior, sexual solicitation, harassment, threats, hateful conduct, scams, spam, or illegal content. Do not share anyone’s private information.'],['Respect boundaries','Do not pressure people to reveal personal information or record or distribute their conversations without consent. These rules cannot prevent someone from recording their screen. Leave if you feel uncomfortable.'],['Your controls','End turns off your devices. Next ends the current connection and searches again while keeping your local preview. Block and Report prevent future matches between the same browser IDs.'],['Reports need a human','Reports are sent to the site operator. They are not automatically reviewed. This software does not include automatic video moderation or reliable identity checks. Browser-based bans can be evaded by clearing cookies.']]},
+    privacy:{title:'A little clarity on privacy.',sections:[['Camera & microphone','No device is accessed before you click and agree. In video mode, your browser requests permission. A preview is local until matching; during a conversation, WebRTC transmits your media. Text mode requests neither device. End or closing the page releases your tracks.'],['Text messages','Text passes through the server and is visible to the participants. The server keeps up to the last 20 messages of a conversation in memory for reporting, for up to two minutes after it ends. Normal chats are not written to the database. Either participant may choose to attach those messages to a report; those excerpts then persist for moderation. Participants could also copy messages themselves.'],['Saved data',`A signed, essential browser cookie lasts up to 30 days. It supports blocks and suspensions without an account. Preferences and interests are stored in your browser. Reports include browser identifiers, a reason, optional details, timestamps, and optional text excerpts. Reports and blocks expire after ${days} days; bans expire at the time selected by the operator. Data lives in the operator’s database. Deletion is performed at startup and by periodic cleanup; backups are the operator’s responsibility.`],['Connections and IP addresses','Direct WebRTC can expose your IP address to the other participant. Public hosting in this project forces TURN relay-only mode. The server, hosting provider, and relay provider can still see connection metadata. Local development uses Google’s public STUN service unless changed in configuration. There is no built-in analytics, advertising, video recording, or audio recording. Hosting providers may have separate logs.'],['Operator contact',s.config?.moderatorContact?`Contact the operator for reports or privacy requests: ${s.config.moderatorContact}`:'This is a local development copy. A public operator must set a real contact and review these notices before launch.']]},
+    help:{title:'One conversation at a time.',sections:[['1. Set your pace','Choose Video or Text. Add up to six interests if you like. With strict matching off, each search widens after 15 seconds. Two users need the same mode and compatible interests. With strict matching on, a shared interest is required.'],['2. Say hello','Agree to the rules, then allow camera and microphone for video. Enable preview only shows you to yourself. Start a conversation places you in the real waiting queue. No fake people or prerecorded videos are used.'],['3. You’re in control','Mic and camera buttons pause transmission; End fully releases your devices. New videos are blurred until you reveal them, unless you switch that off in Settings. This blur is not an automated safety filter. Alt+N skips; M toggles your mic; V toggles your camera; Escape ends the chat. Shortcuts are disabled while typing or inside a dialog.'],['Trying it by yourself','Open the running server’s address in a normal browser window and a private/incognito window. Start Text mode in both to test matching without needing two cameras. The same browser cookie cannot chat in two tabs. After a skip, the same two browser IDs are kept apart for 30 seconds.'],['If the camera does not work','Use localhost on your own computer, or an HTTPS address for other devices. Give your browser both camera and microphone permissions. Close other apps using them. Across different networks, configure a real TURN relay; text can still work if video cannot connect.'],['Before a public launch','This is a self-hosted application, not a staffed safety service. Public operation needs HTTPS hosting, relay capacity, real moderation, stronger age assurance, abuse prevention, and policy/legal review. The included README explains deployment boundaries.']]},
+  }[kind];
+  if (!content) return;
+  $('infoTitle').textContent=content.title; $('infoBody').replaceChildren();
+  for (const [heading,text] of content.sections) { const h=document.createElement('h3'),p=document.createElement('p');h.textContent=heading;p.textContent=text;$('infoBody').append(h,p); }
+  openDialog('infoDialog');
+}
+
+function showStandaloneInfo(title,sections){
+  $('infoTitle').textContent=title;$('infoBody').replaceChildren();
+  for(const [heading,text]of sections){const h=document.createElement('h3'),p=document.createElement('p');h.textContent=heading;p.textContent=text;$('infoBody').append(h,p);}
+  openDialog('infoDialog');
+}
+$('startButton').addEventListener('click',()=>begin('start'));
+$('previewButton').addEventListener('click',()=>begin('preview'));
+$('endButton').addEventListener('click',()=>endSession());
+$('micButton').addEventListener('click',toggleMic); $('cameraButton').addEventListener('click',toggleCamera);
+$('speakerButton').addEventListener('click',()=>{s.speaker=!s.speaker;render();});
+$('revealButton').addEventListener('click',()=>{s.revealed=true;render();});
+$('playRemote').addEventListener('click',()=>{$('remoteVideo').play().then(()=>$('playRemote').hidden=true).catch(()=>toast('Your browser could not play the media. Try Next.'));});
+$('fullscreenButton').addEventListener('click',async()=>{try {if (document.fullscreenElement) await document.exitFullscreen();else if ($('videoStage').requestFullscreen) await $('videoStage').requestFullscreen();else toast('Fullscreen is not supported in this browser.');}catch {toast('Fullscreen is unavailable in this browser.');}});
+for (const mode of ['video','text']) $(mode+'Mode').addEventListener('click',()=>{if (s.state!=='idle'||s.busy) return;releaseMedia();prefs.mode=mode;savePreferences();render();});
+$('interestForm').addEventListener('submit',event=>{event.preventDefault();addInterest($('interestInput').value);});
+document.querySelectorAll('[data-interest]').forEach(button=>button.addEventListener('click',()=>addInterest(button.dataset.interest)));
+$('hideDev').addEventListener('click',()=>$('devNotice').hidden=true);
+document.querySelectorAll('[data-info]').forEach(button=>button.addEventListener('click',()=>showInfo(button.dataset.info)));
+document.querySelectorAll('[data-close]').forEach(button=>button.addEventListener('click',()=>$(button.dataset.close).close()));
+for (const checkbox of ['adultConsent','rulesConsent']) $(checkbox).addEventListener('change',()=>{$('agreeButton').disabled=!($('adultConsent').checked&&$('rulesConsent').checked);});
+$('agreeButton').addEventListener('click',async()=>{
+  if (!$('adultConsent').checked||!$('rulesConsent').checked) return;
+  $('agreeButton').disabled=true;
+  try {if(s.online)await request('session:accept',{adult:true,rules:true,version:s.config.rulesVersion});s.accepted=true;if(!$('consentDialog').open)return;$('consentDialog').close();perform(s.intent);}
+  catch(error) {$('consentError').textContent=error.message;}
+  finally {$('agreeButton').disabled=!($('adultConsent').checked&&$('rulesConsent').checked);}
+});
+$('settingsButton').addEventListener('click',()=>{listDevices();render();openDialog('settingsDialog');});
+$('themeSetting').value=prefs.theme;
+$('themeSetting').addEventListener('change',event=>{prefs.theme=event.target.value;savePreferences();applyTheme();});
+for (const key of ['mirror','blur','strict','autoNext','sounds']) {
+  const element=$(key+'Setting');element.checked=prefs[key];
+  element.addEventListener('change',()=>{prefs[key]=element.checked;savePreferences();if(key==='sounds')unlockAudio();if(key==='autoNext'&&!prefs.autoNext){clearAutoNext();if(!s.room&&s.state==='idle'){s.wantsMatch=false;releaseMedia();}}render();});
+}
+$('volumeSetting').value=prefs.volume; $('volumeSetting').addEventListener('input',event=>{prefs.volume=Number(event.target.value);savePreferences();render();});
+for (const [id,key] of [['cameraSelect','camera'],['micSelect','mic']]) $(id).addEventListener('change',event=>{prefs[key]=event.target.value;savePreferences();});
+navigator.mediaDevices?.addEventListener?.('devicechange',listDevices);
+$('messageInput').addEventListener('input',()=>{updateInput();if (s.room&&Date.now()-lastTyping>1100) {lastTyping=Date.now();fire('chat:typing',{roomId:s.room.roomId,typing:Boolean($('messageInput').value)});}});
+$('messageInput').addEventListener('keydown',event=>{if(event.key==='Enter'&&!event.shiftKey&&!event.isComposing){event.preventDefault();$('messageForm').requestSubmit();}});
+$('messageForm').addEventListener('submit',async event=>{
+  event.preventDefault();const text=$('messageInput').value.trim();if (!s.room||!text||$('sendButton').disabled) return;
+  const roomId=s.room.roomId,id=crypto.randomUUID();$('sendButton').disabled=true;
+  try {
+    const result=await request('chat:message',{roomId,text,id});
+    if (s.room?.roomId!==roomId) return;
+    appendMessage(result.message,true);
+    if ($('messageInput').value.trim()===text) $('messageInput').value='';
+    updateInput(); fire('chat:typing',{roomId,typing:false});$('messageInput').focus();
+  } catch(error) {toast(error.message+' If you resend, the original may already have arrived.');}
+  finally {$('sendButton').disabled=!s.room;}
+});
+$('icebreakerButton').addEventListener('click',()=>{if (!s.room) return;$('messageInput').value=openers[openerIndex++%openers.length];updateInput();$('messageInput').focus();});
+$('emojiButton').addEventListener('click',()=>{$('emojiPicker').hidden=!$('emojiPicker').hidden;$('emojiButton').setAttribute('aria-expanded',String(!$('emojiPicker').hidden));});
+document.querySelectorAll('#emojiPicker button').forEach(button=>button.addEventListener('click',()=>{if(!s.room)return;const input=$('messageInput');if(input.value.length+button.textContent.length<=1000)input.setRangeText(button.textContent,input.selectionStart,input.selectionEnd,'end');$('emojiPicker').hidden=true;$('emojiButton').setAttribute('aria-expanded','false');updateInput();input.focus();}));
+$('blockButton').addEventListener('click',async()=>{
+  const roomId=s.lastRoom;if(!roomId||!window.confirm('Block this browser and end the conversation?'))return;
+  await endSession();
+  try{await request('safety:block',{roomId});s.lastRoom=null;render();toast('Blocked. You will not be matched with that browser ID again while the block is retained.');}catch(error){toast(error.message);}
+});
+$('reportButton').addEventListener('click',()=>{
+  if(!s.lastRoom)return;s.reportRoom=s.lastRoom;endSession('You ended this conversation to report it.');
+  $('reportForm').reset();$('reportError').textContent='';openDialog('reportDialog');
+});
+$('reportForm').addEventListener('submit',async event=>{
+  event.preventDefault();$('submitReport').disabled=true;
+  try{await request('safety:report',{roomId:s.reportRoom,reason:$('reportReason').value,details:$('reportDetails').value,includeTranscript:$('includeTranscript').checked});$('reportDialog').close();s.lastRoom=null;render();toast('Report saved for the site operator. This browser has also been blocked.');}
+  catch(error){$('reportError').textContent=error.message;}
+  finally{$('submitReport').disabled=false;}
+});
+document.addEventListener('keydown',event=>{
+  if (event.target.closest('input,textarea,select,button')||document.querySelector('dialog[open]')||event.ctrlKey||event.metaKey||event.repeat) return;
+  if(event.key==='Escape'){event.preventDefault();endSession();}
+  if(event.altKey&&event.key.toLowerCase()==='n'){event.preventDefault();if(s.state!=='searching')begin('start');}
+  if(!event.altKey&&event.key.toLowerCase()==='m')toggleMic();
+  if(!event.altKey&&event.key.toLowerCase()==='v')toggleCamera();
+});
+window.addEventListener('pagehide',()=>{++s.operation;clearAutoNext();closePeer();releaseMedia();s.socket?.disconnect();});
+window.addEventListener('pageshow',event=>{if(event.persisted)location.reload();});
+setInterval(()=>{
+  if (s.room) {const seconds=Math.floor((Date.now()-s.started)/1000);$('chatTimer').textContent=String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(seconds%60).padStart(2,'0');}
+  else if(s.state==='searching')render();
+  if(s.reportExpires && s.reportExpires<Date.now() && s.lastRoom){s.lastRoom=null;render();}
+},1000);
+renderInterests(); boot();
+
+})();
+</script>
+</body>
+</html>
+
